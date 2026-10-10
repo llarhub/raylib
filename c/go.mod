@@ -1,10 +1,5 @@
-module github.com/llarhub/raylib/c
+module github.com/llarhub/raylib
 
-go 1.23
+go 1.23 // llgo 1.0
 
-require (
-	github.com/goplus/lib v0.6.1
-	github.com/llarhub/raylib v0.0.0
-)
-
-replace github.com/llarhub/raylib => ../..
+require github.com/goplus/lib v0.6.1
