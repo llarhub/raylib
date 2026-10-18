@@ -7,758 +7,11 @@ import (
 	"unsafe"
 )
 
-const RAYLIB_VERSION_MAJOR = 6
-const RAYLIB_VERSION_MINOR = 0
-const RAYLIB_VERSION_PATCH = 0
-const RAYLIB_VERSION = "6.0"
-
-// ----------------------------------------------------------------------------------
-// Enumerators Definition
-// ----------------------------------------------------------------------------------
-// System/Window config flags
-// NOTE: Every bit registers one state (use it with bit masks)
-// By default all flags are set to 0
-type ConfigFlags c.Uint
-
 const (
-	// Set to try enabling V-Sync on GPU
-	FLAG_VSYNC_HINT ConfigFlags = 64
-	// Set to run program in fullscreen
-	FLAG_FULLSCREEN_MODE ConfigFlags = 2
-	// Set to allow resizable window
-	FLAG_WINDOW_RESIZABLE ConfigFlags = 4
-	// Set to disable window decoration (frame and buttons)
-	FLAG_WINDOW_UNDECORATED ConfigFlags = 8
-	// Set to hide window
-	FLAG_WINDOW_HIDDEN ConfigFlags = 128
-	// Set to minimize window (iconify)
-	FLAG_WINDOW_MINIMIZED ConfigFlags = 512
-	// Set to maximize window (expanded to monitor)
-	FLAG_WINDOW_MAXIMIZED ConfigFlags = 1024
-	// Set to window non focused
-	FLAG_WINDOW_UNFOCUSED ConfigFlags = 2048
-	// Set to window always on top
-	FLAG_WINDOW_TOPMOST ConfigFlags = 4096
-	// Set to allow windows running while minimized
-	FLAG_WINDOW_ALWAYS_RUN ConfigFlags = 256
-	// Set to allow transparent framebuffer
-	FLAG_WINDOW_TRANSPARENT ConfigFlags = 16
-	// Set to support HighDPI
-	FLAG_WINDOW_HIGHDPI ConfigFlags = 8192
-	// Set to support mouse passthrough, only supported when FLAG_WINDOW_UNDECORATED
-	FLAG_WINDOW_MOUSE_PASSTHROUGH ConfigFlags = 16384
-	// Set to run program in borderless windowed mode
-	FLAG_BORDERLESS_WINDOWED_MODE ConfigFlags = 32768
-	// Set to try enabling MSAA 4X
-	FLAG_MSAA_4X_HINT ConfigFlags = 32
-	// Set to try enabling interlaced video format (for V3D)
-	FLAG_INTERLACED_HINT ConfigFlags = 65536
-)
-
-// Trace log level
-// NOTE: Organized by priority level
-type TraceLogLevel c.Uint
-
-const (
-	// Display all logs
-	LOG_ALL TraceLogLevel = 0
-	// Trace logging, intended for internal use only
-	LOG_TRACE TraceLogLevel = 1
-	// Debug logging, used for internal debugging, it should be disabled on release builds
-	LOG_DEBUG TraceLogLevel = 2
-	// Info logging, used for program execution info
-	LOG_INFO TraceLogLevel = 3
-	// Warning logging, used on recoverable failures
-	LOG_WARNING TraceLogLevel = 4
-	// Error logging, used on unrecoverable failures
-	LOG_ERROR TraceLogLevel = 5
-	// Fatal logging, used to abort program: exit(EXIT_FAILURE)
-	LOG_FATAL TraceLogLevel = 6
-	// Disable logging
-	LOG_NONE TraceLogLevel = 7
-)
-
-// Keyboard keys (US keyboard layout)
-// NOTE: Use GetKeyPressed() to allow redefining required keys for alternative layouts
-type KeyboardKey c.Uint
-
-const (
-	// Key: NULL, used for no key pressed
-	KEY_NULL KeyboardKey = 0
-	// Key: '
-	KEY_APOSTROPHE KeyboardKey = 39
-	// Key: ,
-	KEY_COMMA KeyboardKey = 44
-	// Key: -
-	KEY_MINUS KeyboardKey = 45
-	// Key: .
-	KEY_PERIOD KeyboardKey = 46
-	// Key: /
-	KEY_SLASH KeyboardKey = 47
-	// Key: 0
-	KEY_ZERO KeyboardKey = 48
-	// Key: 1
-	KEY_ONE KeyboardKey = 49
-	// Key: 2
-	KEY_TWO KeyboardKey = 50
-	// Key: 3
-	KEY_THREE KeyboardKey = 51
-	// Key: 4
-	KEY_FOUR KeyboardKey = 52
-	// Key: 5
-	KEY_FIVE KeyboardKey = 53
-	// Key: 6
-	KEY_SIX KeyboardKey = 54
-	// Key: 7
-	KEY_SEVEN KeyboardKey = 55
-	// Key: 8
-	KEY_EIGHT KeyboardKey = 56
-	// Key: 9
-	KEY_NINE KeyboardKey = 57
-	// Key: ;
-	KEY_SEMICOLON KeyboardKey = 59
-	// Key: =
-	KEY_EQUAL KeyboardKey = 61
-	// Key: A | a
-	KEY_A KeyboardKey = 65
-	// Key: B | b
-	KEY_B KeyboardKey = 66
-	// Key: C | c
-	KEY_C KeyboardKey = 67
-	// Key: D | d
-	KEY_D KeyboardKey = 68
-	// Key: E | e
-	KEY_E KeyboardKey = 69
-	// Key: F | f
-	KEY_F KeyboardKey = 70
-	// Key: G | g
-	KEY_G KeyboardKey = 71
-	// Key: H | h
-	KEY_H KeyboardKey = 72
-	// Key: I | i
-	KEY_I KeyboardKey = 73
-	// Key: J | j
-	KEY_J KeyboardKey = 74
-	// Key: K | k
-	KEY_K KeyboardKey = 75
-	// Key: L | l
-	KEY_L KeyboardKey = 76
-	// Key: M | m
-	KEY_M KeyboardKey = 77
-	// Key: N | n
-	KEY_N KeyboardKey = 78
-	// Key: O | o
-	KEY_O KeyboardKey = 79
-	// Key: P | p
-	KEY_P KeyboardKey = 80
-	// Key: Q | q
-	KEY_Q KeyboardKey = 81
-	// Key: R | r
-	KEY_R KeyboardKey = 82
-	// Key: S | s
-	KEY_S KeyboardKey = 83
-	// Key: T | t
-	KEY_T KeyboardKey = 84
-	// Key: U | u
-	KEY_U KeyboardKey = 85
-	// Key: V | v
-	KEY_V KeyboardKey = 86
-	// Key: W | w
-	KEY_W KeyboardKey = 87
-	// Key: X | x
-	KEY_X KeyboardKey = 88
-	// Key: Y | y
-	KEY_Y KeyboardKey = 89
-	// Key: Z | z
-	KEY_Z KeyboardKey = 90
-	// Key: [
-	KEY_LEFT_BRACKET KeyboardKey = 91
-	// Key: '\'
-	KEY_BACKSLASH KeyboardKey = 92
-	// Key: ]
-	KEY_RIGHT_BRACKET KeyboardKey = 93
-	// Key: `
-	KEY_GRAVE KeyboardKey = 96
-	// Key: Space
-	KEY_SPACE KeyboardKey = 32
-	// Key: Esc
-	KEY_ESCAPE KeyboardKey = 256
-	// Key: Enter
-	KEY_ENTER KeyboardKey = 257
-	// Key: Tab
-	KEY_TAB KeyboardKey = 258
-	// Key: Backspace
-	KEY_BACKSPACE KeyboardKey = 259
-	// Key: Ins
-	KEY_INSERT KeyboardKey = 260
-	// Key: Del
-	KEY_DELETE KeyboardKey = 261
-	// Key: Cursor right
-	KEY_RIGHT KeyboardKey = 262
-	// Key: Cursor left
-	KEY_LEFT KeyboardKey = 263
-	// Key: Cursor down
-	KEY_DOWN KeyboardKey = 264
-	// Key: Cursor up
-	KEY_UP KeyboardKey = 265
-	// Key: Page up
-	KEY_PAGE_UP KeyboardKey = 266
-	// Key: Page down
-	KEY_PAGE_DOWN KeyboardKey = 267
-	// Key: Home
-	KEY_HOME KeyboardKey = 268
-	// Key: End
-	KEY_END KeyboardKey = 269
-	// Key: Caps lock
-	KEY_CAPS_LOCK KeyboardKey = 280
-	// Key: Scroll down
-	KEY_SCROLL_LOCK KeyboardKey = 281
-	// Key: Num lock
-	KEY_NUM_LOCK KeyboardKey = 282
-	// Key: Print screen
-	KEY_PRINT_SCREEN KeyboardKey = 283
-	// Key: Pause
-	KEY_PAUSE KeyboardKey = 284
-	// Key: F1
-	KEY_F1 KeyboardKey = 290
-	// Key: F2
-	KEY_F2 KeyboardKey = 291
-	// Key: F3
-	KEY_F3 KeyboardKey = 292
-	// Key: F4
-	KEY_F4 KeyboardKey = 293
-	// Key: F5
-	KEY_F5 KeyboardKey = 294
-	// Key: F6
-	KEY_F6 KeyboardKey = 295
-	// Key: F7
-	KEY_F7 KeyboardKey = 296
-	// Key: F8
-	KEY_F8 KeyboardKey = 297
-	// Key: F9
-	KEY_F9 KeyboardKey = 298
-	// Key: F10
-	KEY_F10 KeyboardKey = 299
-	// Key: F11
-	KEY_F11 KeyboardKey = 300
-	// Key: F12
-	KEY_F12 KeyboardKey = 301
-	// Key: Shift left
-	KEY_LEFT_SHIFT KeyboardKey = 340
-	// Key: Control left
-	KEY_LEFT_CONTROL KeyboardKey = 341
-	// Key: Alt left
-	KEY_LEFT_ALT KeyboardKey = 342
-	// Key: Super left
-	KEY_LEFT_SUPER KeyboardKey = 343
-	// Key: Shift right
-	KEY_RIGHT_SHIFT KeyboardKey = 344
-	// Key: Control right
-	KEY_RIGHT_CONTROL KeyboardKey = 345
-	// Key: Alt right
-	KEY_RIGHT_ALT KeyboardKey = 346
-	// Key: Super right
-	KEY_RIGHT_SUPER KeyboardKey = 347
-	// Key: KB menu
-	KEY_KB_MENU KeyboardKey = 348
-	// Key: Keypad 0
-	KEY_KP_0 KeyboardKey = 320
-	// Key: Keypad 1
-	KEY_KP_1 KeyboardKey = 321
-	// Key: Keypad 2
-	KEY_KP_2 KeyboardKey = 322
-	// Key: Keypad 3
-	KEY_KP_3 KeyboardKey = 323
-	// Key: Keypad 4
-	KEY_KP_4 KeyboardKey = 324
-	// Key: Keypad 5
-	KEY_KP_5 KeyboardKey = 325
-	// Key: Keypad 6
-	KEY_KP_6 KeyboardKey = 326
-	// Key: Keypad 7
-	KEY_KP_7 KeyboardKey = 327
-	// Key: Keypad 8
-	KEY_KP_8 KeyboardKey = 328
-	// Key: Keypad 9
-	KEY_KP_9 KeyboardKey = 329
-	// Key: Keypad .
-	KEY_KP_DECIMAL KeyboardKey = 330
-	// Key: Keypad /
-	KEY_KP_DIVIDE KeyboardKey = 331
-	// Key: Keypad *
-	KEY_KP_MULTIPLY KeyboardKey = 332
-	// Key: Keypad -
-	KEY_KP_SUBTRACT KeyboardKey = 333
-	// Key: Keypad +
-	KEY_KP_ADD KeyboardKey = 334
-	// Key: Keypad Enter
-	KEY_KP_ENTER KeyboardKey = 335
-	// Key: Keypad =
-	KEY_KP_EQUAL KeyboardKey = 336
-	// Key: Android back button
-	KEY_BACK KeyboardKey = 4
-	// Key: Android menu button
-	KEY_MENU KeyboardKey = 5
-	// Key: Android volume up button
-	KEY_VOLUME_UP KeyboardKey = 24
-	// Key: Android volume down button
-	KEY_VOLUME_DOWN KeyboardKey = 25
-)
-
-// Mouse buttons
-type MouseButton c.Uint
-
-const (
-	// Mouse button left
-	MOUSE_BUTTON_LEFT MouseButton = 0
-	// Mouse button right
-	MOUSE_BUTTON_RIGHT MouseButton = 1
-	// Mouse button middle (pressed wheel)
-	MOUSE_BUTTON_MIDDLE MouseButton = 2
-	// Mouse button side (advanced mouse device)
-	MOUSE_BUTTON_SIDE MouseButton = 3
-	// Mouse button extra (advanced mouse device)
-	MOUSE_BUTTON_EXTRA MouseButton = 4
-	// Mouse button forward (advanced mouse device)
-	MOUSE_BUTTON_FORWARD MouseButton = 5
-	// Mouse button back (advanced mouse device)
-	MOUSE_BUTTON_BACK MouseButton = 6
-)
-
-// Mouse cursor
-type MouseCursor c.Uint
-
-const (
-	// Default pointer shape
-	MOUSE_CURSOR_DEFAULT MouseCursor = 0
-	// Arrow shape
-	MOUSE_CURSOR_ARROW MouseCursor = 1
-	// Text writing cursor shape
-	MOUSE_CURSOR_IBEAM MouseCursor = 2
-	// Cross shape
-	MOUSE_CURSOR_CROSSHAIR MouseCursor = 3
-	// Pointing hand cursor
-	MOUSE_CURSOR_POINTING_HAND MouseCursor = 4
-	// Horizontal resize/move arrow shape
-	MOUSE_CURSOR_RESIZE_EW MouseCursor = 5
-	// Vertical resize/move arrow shape
-	MOUSE_CURSOR_RESIZE_NS MouseCursor = 6
-	// Top-left to bottom-right diagonal resize/move arrow shape
-	MOUSE_CURSOR_RESIZE_NWSE MouseCursor = 7
-	// The top-right to bottom-left diagonal resize/move arrow shape
-	MOUSE_CURSOR_RESIZE_NESW MouseCursor = 8
-	// The omnidirectional resize/move cursor shape
-	MOUSE_CURSOR_RESIZE_ALL MouseCursor = 9
-	// The operation-not-allowed shape
-	MOUSE_CURSOR_NOT_ALLOWED MouseCursor = 10
-)
-
-// Gamepad buttons
-type GamepadButton c.Uint
-
-const (
-	// Unknown button, for error checking
-	GAMEPAD_BUTTON_UNKNOWN GamepadButton = 0
-	// Gamepad left DPAD up button
-	GAMEPAD_BUTTON_LEFT_FACE_UP GamepadButton = 1
-	// Gamepad left DPAD right button
-	GAMEPAD_BUTTON_LEFT_FACE_RIGHT GamepadButton = 2
-	// Gamepad left DPAD down button
-	GAMEPAD_BUTTON_LEFT_FACE_DOWN GamepadButton = 3
-	// Gamepad left DPAD left button
-	GAMEPAD_BUTTON_LEFT_FACE_LEFT GamepadButton = 4
-	// Gamepad right button up (i.e. PS3: Triangle, Xbox: Y)
-	GAMEPAD_BUTTON_RIGHT_FACE_UP GamepadButton = 5
-	// Gamepad right button right (i.e. PS3: Circle, Xbox: B)
-	GAMEPAD_BUTTON_RIGHT_FACE_RIGHT GamepadButton = 6
-	// Gamepad right button down (i.e. PS3: Cross, Xbox: A)
-	GAMEPAD_BUTTON_RIGHT_FACE_DOWN GamepadButton = 7
-	// Gamepad right button left (i.e. PS3: Square, Xbox: X)
-	GAMEPAD_BUTTON_RIGHT_FACE_LEFT GamepadButton = 8
-	// Gamepad top/back trigger left (first), it could be a trailing button
-	GAMEPAD_BUTTON_LEFT_TRIGGER_1 GamepadButton = 9
-	// Gamepad top/back trigger left (second), it could be a trailing button
-	GAMEPAD_BUTTON_LEFT_TRIGGER_2 GamepadButton = 10
-	// Gamepad top/back trigger right (first), it could be a trailing button
-	GAMEPAD_BUTTON_RIGHT_TRIGGER_1 GamepadButton = 11
-	// Gamepad top/back trigger right (second), it could be a trailing button
-	GAMEPAD_BUTTON_RIGHT_TRIGGER_2 GamepadButton = 12
-	// Gamepad center buttons, left one (i.e. PS3: Select)
-	GAMEPAD_BUTTON_MIDDLE_LEFT GamepadButton = 13
-	// Gamepad center buttons, middle one (i.e. PS3: PS, Xbox: XBOX)
-	GAMEPAD_BUTTON_MIDDLE GamepadButton = 14
-	// Gamepad center buttons, right one (i.e. PS3: Start)
-	GAMEPAD_BUTTON_MIDDLE_RIGHT GamepadButton = 15
-	// Gamepad joystick pressed button left
-	GAMEPAD_BUTTON_LEFT_THUMB GamepadButton = 16
-	// Gamepad joystick pressed button right
-	GAMEPAD_BUTTON_RIGHT_THUMB GamepadButton = 17
-)
-
-// Gamepad axes
-type GamepadAxis c.Uint
-
-const (
-	// Gamepad left stick X axis
-	GAMEPAD_AXIS_LEFT_X GamepadAxis = 0
-	// Gamepad left stick Y axis
-	GAMEPAD_AXIS_LEFT_Y GamepadAxis = 1
-	// Gamepad right stick X axis
-	GAMEPAD_AXIS_RIGHT_X GamepadAxis = 2
-	// Gamepad right stick Y axis
-	GAMEPAD_AXIS_RIGHT_Y GamepadAxis = 3
-	// Gamepad back trigger left, pressure level: [1..-1]
-	GAMEPAD_AXIS_LEFT_TRIGGER GamepadAxis = 4
-	// Gamepad back trigger right, pressure level: [1..-1]
-	GAMEPAD_AXIS_RIGHT_TRIGGER GamepadAxis = 5
-)
-
-// Material map index
-type MaterialMapIndex c.Uint
-
-const (
-	// Albedo material (same as: MATERIAL_MAP_DIFFUSE)
-	MATERIAL_MAP_ALBEDO MaterialMapIndex = 0
-	// Metalness material (same as: MATERIAL_MAP_SPECULAR)
-	MATERIAL_MAP_METALNESS MaterialMapIndex = 1
-	// Normal material
-	MATERIAL_MAP_NORMAL MaterialMapIndex = 2
-	// Roughness material
-	MATERIAL_MAP_ROUGHNESS MaterialMapIndex = 3
-	// Ambient occlusion material
-	MATERIAL_MAP_OCCLUSION MaterialMapIndex = 4
-	// Emission material
-	MATERIAL_MAP_EMISSION MaterialMapIndex = 5
-	// Heightmap material
-	MATERIAL_MAP_HEIGHT MaterialMapIndex = 6
-	// Cubemap material (NOTE: Uses GL_TEXTURE_CUBE_MAP)
-	MATERIAL_MAP_CUBEMAP MaterialMapIndex = 7
-	// Irradiance material (NOTE: Uses GL_TEXTURE_CUBE_MAP)
-	MATERIAL_MAP_IRRADIANCE MaterialMapIndex = 8
-	// Prefilter material (NOTE: Uses GL_TEXTURE_CUBE_MAP)
-	MATERIAL_MAP_PREFILTER MaterialMapIndex = 9
-	// Brdf material
-	MATERIAL_MAP_BRDF MaterialMapIndex = 10
-)
-
-// Shader location index
-// NOTE: Some locations are tried to be set automatically on shader loading,
-// but only if default attributes/uniforms names are found, check config.h for names
-type ShaderLocationIndex c.Uint
-
-const (
-	// Shader location: vertex attribute: position
-	SHADER_LOC_VERTEX_POSITION ShaderLocationIndex = 0
-	// Shader location: vertex attribute: texcoord01
-	SHADER_LOC_VERTEX_TEXCOORD01 ShaderLocationIndex = 1
-	// Shader location: vertex attribute: texcoord02
-	SHADER_LOC_VERTEX_TEXCOORD02 ShaderLocationIndex = 2
-	// Shader location: vertex attribute: normal
-	SHADER_LOC_VERTEX_NORMAL ShaderLocationIndex = 3
-	// Shader location: vertex attribute: tangent
-	SHADER_LOC_VERTEX_TANGENT ShaderLocationIndex = 4
-	// Shader location: vertex attribute: color
-	SHADER_LOC_VERTEX_COLOR ShaderLocationIndex = 5
-	// Shader location: matrix uniform: model-view-projection
-	SHADER_LOC_MATRIX_MVP ShaderLocationIndex = 6
-	// Shader location: matrix uniform: view (camera transform)
-	SHADER_LOC_MATRIX_VIEW ShaderLocationIndex = 7
-	// Shader location: matrix uniform: projection
-	SHADER_LOC_MATRIX_PROJECTION ShaderLocationIndex = 8
-	// Shader location: matrix uniform: model (transform)
-	SHADER_LOC_MATRIX_MODEL ShaderLocationIndex = 9
-	// Shader location: matrix uniform: normal
-	SHADER_LOC_MATRIX_NORMAL ShaderLocationIndex = 10
-	// Shader location: vector uniform: view
-	SHADER_LOC_VECTOR_VIEW ShaderLocationIndex = 11
-	// Shader location: vector uniform: diffuse color
-	SHADER_LOC_COLOR_DIFFUSE ShaderLocationIndex = 12
-	// Shader location: vector uniform: specular color
-	SHADER_LOC_COLOR_SPECULAR ShaderLocationIndex = 13
-	// Shader location: vector uniform: ambient color
-	SHADER_LOC_COLOR_AMBIENT ShaderLocationIndex = 14
-	// Shader location: sampler2d texture: albedo (same as: SHADER_LOC_MAP_DIFFUSE)
-	SHADER_LOC_MAP_ALBEDO ShaderLocationIndex = 15
-	// Shader location: sampler2d texture: metalness (same as: SHADER_LOC_MAP_SPECULAR)
-	SHADER_LOC_MAP_METALNESS ShaderLocationIndex = 16
-	// Shader location: sampler2d texture: normal
-	SHADER_LOC_MAP_NORMAL ShaderLocationIndex = 17
-	// Shader location: sampler2d texture: roughness
-	SHADER_LOC_MAP_ROUGHNESS ShaderLocationIndex = 18
-	// Shader location: sampler2d texture: occlusion
-	SHADER_LOC_MAP_OCCLUSION ShaderLocationIndex = 19
-	// Shader location: sampler2d texture: emission
-	SHADER_LOC_MAP_EMISSION ShaderLocationIndex = 20
-	// Shader location: sampler2d texture: heightmap
-	SHADER_LOC_MAP_HEIGHT ShaderLocationIndex = 21
-	// Shader location: samplerCube texture: cubemap
-	SHADER_LOC_MAP_CUBEMAP ShaderLocationIndex = 22
-	// Shader location: samplerCube texture: irradiance
-	SHADER_LOC_MAP_IRRADIANCE ShaderLocationIndex = 23
-	// Shader location: samplerCube texture: prefilter
-	SHADER_LOC_MAP_PREFILTER ShaderLocationIndex = 24
-	// Shader location: sampler2d texture: brdf
-	SHADER_LOC_MAP_BRDF ShaderLocationIndex = 25
-	// Shader location: vertex attribute: bone indices
-	SHADER_LOC_VERTEX_BONEIDS ShaderLocationIndex = 26
-	// Shader location: vertex attribute: bone weights
-	SHADER_LOC_VERTEX_BONEWEIGHTS ShaderLocationIndex = 27
-	// Shader location: matrix attribute: bone transforms (animation)
-	SHADER_LOC_MATRIX_BONETRANSFORMS ShaderLocationIndex = 28
-	// Shader location: vertex attribute: instance transforms
-	SHADER_LOC_VERTEX_INSTANCETRANSFORM ShaderLocationIndex = 29
-)
-
-// Shader uniform data type
-type ShaderUniformDataType c.Uint
-
-const (
-	// Shader uniform type: float
-	SHADER_UNIFORM_FLOAT ShaderUniformDataType = 0
-	// Shader uniform type: vec2 (2 float)
-	SHADER_UNIFORM_VEC2 ShaderUniformDataType = 1
-	// Shader uniform type: vec3 (3 float)
-	SHADER_UNIFORM_VEC3 ShaderUniformDataType = 2
-	// Shader uniform type: vec4 (4 float)
-	SHADER_UNIFORM_VEC4 ShaderUniformDataType = 3
-	// Shader uniform type: int
-	SHADER_UNIFORM_INT ShaderUniformDataType = 4
-	// Shader uniform type: ivec2 (2 int)
-	SHADER_UNIFORM_IVEC2 ShaderUniformDataType = 5
-	// Shader uniform type: ivec3 (3 int)
-	SHADER_UNIFORM_IVEC3 ShaderUniformDataType = 6
-	// Shader uniform type: ivec4 (4 int)
-	SHADER_UNIFORM_IVEC4 ShaderUniformDataType = 7
-	// Shader uniform type: unsigned int
-	SHADER_UNIFORM_UINT ShaderUniformDataType = 8
-	// Shader uniform type: uivec2 (2 unsigned int)
-	SHADER_UNIFORM_UIVEC2 ShaderUniformDataType = 9
-	// Shader uniform type: uivec3 (3 unsigned int)
-	SHADER_UNIFORM_UIVEC3 ShaderUniformDataType = 10
-	// Shader uniform type: uivec4 (4 unsigned int)
-	SHADER_UNIFORM_UIVEC4 ShaderUniformDataType = 11
-	// Shader uniform type: sampler2d
-	SHADER_UNIFORM_SAMPLER2D ShaderUniformDataType = 12
-)
-
-// Shader attribute data types
-type ShaderAttributeDataType c.Uint
-
-const (
-	// Shader attribute type: float
-	SHADER_ATTRIB_FLOAT ShaderAttributeDataType = 0
-	// Shader attribute type: vec2 (2 float)
-	SHADER_ATTRIB_VEC2 ShaderAttributeDataType = 1
-	// Shader attribute type: vec3 (3 float)
-	SHADER_ATTRIB_VEC3 ShaderAttributeDataType = 2
-	// Shader attribute type: vec4 (4 float)
-	SHADER_ATTRIB_VEC4 ShaderAttributeDataType = 3
-)
-
-// Pixel formats
-// NOTE: Support depends on OpenGL version and platform
-type PixelFormat c.Uint
-
-const (
-	// 8 bit per pixel (no alpha)
-	PIXELFORMAT_UNCOMPRESSED_GRAYSCALE PixelFormat = 1
-	// 8*2 bpp (2 channels)
-	PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA PixelFormat = 2
-	// 16 bpp
-	PIXELFORMAT_UNCOMPRESSED_R5G6B5 PixelFormat = 3
-	// 24 bpp
-	PIXELFORMAT_UNCOMPRESSED_R8G8B8 PixelFormat = 4
-	// 16 bpp (1 bit alpha)
-	PIXELFORMAT_UNCOMPRESSED_R5G5B5A1 PixelFormat = 5
-	// 16 bpp (4 bit alpha)
-	PIXELFORMAT_UNCOMPRESSED_R4G4B4A4 PixelFormat = 6
-	// 32 bpp
-	PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 PixelFormat = 7
-	// 32 bpp (1 channel - float)
-	PIXELFORMAT_UNCOMPRESSED_R32 PixelFormat = 8
-	// 32*3 bpp (3 channels - float)
-	PIXELFORMAT_UNCOMPRESSED_R32G32B32 PixelFormat = 9
-	// 32*4 bpp (4 channels - float)
-	PIXELFORMAT_UNCOMPRESSED_R32G32B32A32 PixelFormat = 10
-	// 16 bpp (1 channel - half float)
-	PIXELFORMAT_UNCOMPRESSED_R16 PixelFormat = 11
-	// 16*3 bpp (3 channels - half float)
-	PIXELFORMAT_UNCOMPRESSED_R16G16B16 PixelFormat = 12
-	// 16*4 bpp (4 channels - half float)
-	PIXELFORMAT_UNCOMPRESSED_R16G16B16A16 PixelFormat = 13
-	// 4 bpp (no alpha)
-	PIXELFORMAT_COMPRESSED_DXT1_RGB PixelFormat = 14
-	// 4 bpp (1 bit alpha)
-	PIXELFORMAT_COMPRESSED_DXT1_RGBA PixelFormat = 15
-	// 8 bpp
-	PIXELFORMAT_COMPRESSED_DXT3_RGBA PixelFormat = 16
-	// 8 bpp
-	PIXELFORMAT_COMPRESSED_DXT5_RGBA PixelFormat = 17
-	// 4 bpp
-	PIXELFORMAT_COMPRESSED_ETC1_RGB PixelFormat = 18
-	// 4 bpp
-	PIXELFORMAT_COMPRESSED_ETC2_RGB PixelFormat = 19
-	// 8 bpp
-	PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA PixelFormat = 20
-	// 4 bpp
-	PIXELFORMAT_COMPRESSED_PVRT_RGB PixelFormat = 21
-	// 4 bpp
-	PIXELFORMAT_COMPRESSED_PVRT_RGBA PixelFormat = 22
-	// 8 bpp
-	PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA PixelFormat = 23
-	// 2 bpp
-	PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA PixelFormat = 24
-)
-
-// Texture parameters: filter mode
-// NOTE 1: Filtering considers mipmaps if available in the texture
-// NOTE 2: Filter is accordingly set for minification and magnification
-type TextureFilter c.Uint
-
-const (
-	// No filter, pixel approximation
-	TEXTURE_FILTER_POINT TextureFilter = 0
-	// Linear filtering
-	TEXTURE_FILTER_BILINEAR TextureFilter = 1
-	// Trilinear filtering (linear with mipmaps)
-	TEXTURE_FILTER_TRILINEAR TextureFilter = 2
-	// Anisotropic filtering 4x
-	TEXTURE_FILTER_ANISOTROPIC_4X TextureFilter = 3
-	// Anisotropic filtering 8x
-	TEXTURE_FILTER_ANISOTROPIC_8X TextureFilter = 4
-	// Anisotropic filtering 16x
-	TEXTURE_FILTER_ANISOTROPIC_16X TextureFilter = 5
-)
-
-// Texture parameters: wrap mode
-type TextureWrap c.Uint
-
-const (
-	// Repeats texture in tiled mode
-	TEXTURE_WRAP_REPEAT TextureWrap = 0
-	// Clamps texture to edge pixel in tiled mode
-	TEXTURE_WRAP_CLAMP TextureWrap = 1
-	// Mirrors and repeats the texture in tiled mode
-	TEXTURE_WRAP_MIRROR_REPEAT TextureWrap = 2
-	// Mirrors and clamps to border the texture in tiled mode
-	TEXTURE_WRAP_MIRROR_CLAMP TextureWrap = 3
-)
-
-// Cubemap layouts
-type CubemapLayout c.Uint
-
-const (
-	// Automatically detect layout type
-	CUBEMAP_LAYOUT_AUTO_DETECT CubemapLayout = 0
-	// Layout is defined by a vertical line with faces
-	CUBEMAP_LAYOUT_LINE_VERTICAL CubemapLayout = 1
-	// Layout is defined by a horizontal line with faces
-	CUBEMAP_LAYOUT_LINE_HORIZONTAL CubemapLayout = 2
-	// Layout is defined by a 3x4 cross with cubemap faces
-	CUBEMAP_LAYOUT_CROSS_THREE_BY_FOUR CubemapLayout = 3
-	// Layout is defined by a 4x3 cross with cubemap faces
-	CUBEMAP_LAYOUT_CROSS_FOUR_BY_THREE CubemapLayout = 4
-)
-
-// Font type, defines generation method
-type FontType c.Uint
-
-const (
-	// Default font generation, anti-aliased
-	FONT_DEFAULT FontType = 0
-	// Bitmap font generation, no anti-aliasing
-	FONT_BITMAP FontType = 1
-	// SDF font generation, requires external shader
-	FONT_SDF FontType = 2
-)
-
-// Color blending modes (pre-defined)
-type BlendMode c.Uint
-
-const (
-	// Blend textures considering alpha (default)
-	BLEND_ALPHA BlendMode = 0
-	// Blend textures adding colors
-	BLEND_ADDITIVE BlendMode = 1
-	// Blend textures multiplying colors
-	BLEND_MULTIPLIED BlendMode = 2
-	// Blend textures adding colors (alternative)
-	BLEND_ADD_COLORS BlendMode = 3
-	// Blend textures subtracting colors (alternative)
-	BLEND_SUBTRACT_COLORS BlendMode = 4
-	// Blend premultiplied textures considering alpha
-	BLEND_ALPHA_PREMULTIPLY BlendMode = 5
-	// Blend textures using custom src/dst factors (use rlSetBlendFactors())
-	BLEND_CUSTOM BlendMode = 6
-	// Blend textures using custom rgb/alpha separate src/dst factors (use rlSetBlendFactorsSeparate())
-	BLEND_CUSTOM_SEPARATE BlendMode = 7
-)
-
-// Gesture
-// NOTE: Provided as bit-wise flags to enable only desired gestures
-type Gesture c.Uint
-
-const (
-	// No gesture
-	GESTURE_NONE Gesture = 0
-	// Tap gesture
-	GESTURE_TAP Gesture = 1
-	// Double tap gesture
-	GESTURE_DOUBLETAP Gesture = 2
-	// Hold gesture
-	GESTURE_HOLD Gesture = 4
-	// Drag gesture
-	GESTURE_DRAG Gesture = 8
-	// Swipe right gesture
-	GESTURE_SWIPE_RIGHT Gesture = 16
-	// Swipe left gesture
-	GESTURE_SWIPE_LEFT Gesture = 32
-	// Swipe up gesture
-	GESTURE_SWIPE_UP Gesture = 64
-	// Swipe down gesture
-	GESTURE_SWIPE_DOWN Gesture = 128
-	// Pinch in gesture
-	GESTURE_PINCH_IN Gesture = 256
-	// Pinch out gesture
-	GESTURE_PINCH_OUT Gesture = 512
-)
-
-// Camera system modes
-type CameraMode c.Uint
-
-const (
-	// Camera custom, controlled by user (UpdateCamera() does nothing)
-	CAMERA_CUSTOM CameraMode = 0
-	// Camera free mode
-	CAMERA_FREE CameraMode = 1
-	// Camera orbital, around target, zoom supported
-	CAMERA_ORBITAL CameraMode = 2
-	// Camera first person
-	CAMERA_FIRST_PERSON CameraMode = 3
-	// Camera third person
-	CAMERA_THIRD_PERSON CameraMode = 4
-)
-
-// Camera projection
-type CameraProjection c.Uint
-
-const (
-	// Perspective projection
-	CAMERA_PERSPECTIVE CameraProjection = 0
-	// Orthographic projection
-	CAMERA_ORTHOGRAPHIC CameraProjection = 1
-)
-
-// N-patch layout
-type NPatchLayout c.Uint
-
-const (
-	// Npatch layout: 3x3 tiles
-	NPATCH_NINE_PATCH NPatchLayout = 0
-	// Npatch layout: 1x3 tiles
-	NPATCH_THREE_PATCH_VERTICAL NPatchLayout = 1
-	// Npatch layout: 3x1 tiles
-	NPATCH_THREE_PATCH_HORIZONTAL NPatchLayout = 2
+	VERSION_MAJOR = 6
+	VERSION_MINOR = 0
+	VERSION_PATCH = 0
+	VERSION       = "6.0"
 )
 
 // Vector2, 2 components
@@ -781,9 +34,6 @@ type Vector4 struct {
 	Z c.Float
 	W c.Float
 }
-
-// Quaternion, 4 components (Vector4 alias)
-type Quaternion = Vector4
 
 // Matrix, 4x4 components, column major, OpenGL style, right-handed
 type Matrix struct {
@@ -839,21 +89,12 @@ type Texture struct {
 	Format  c.Int
 }
 
-// Texture2D, same as Texture
-type Texture2D = Texture
-
-// TextureCubemap, same as Texture
-type TextureCubemap = Texture
-
 // RenderTexture, fbo for texture rendering
 type RenderTexture struct {
 	Id      c.Uint
 	Texture Texture
 	Depth   Texture
 }
-
-// RenderTexture2D, same as RenderTexture
-type RenderTexture2D = RenderTexture
 
 // NPatchInfo, n-patch layout info
 type NPatchInfo struct {
@@ -892,7 +133,6 @@ type Camera3D struct {
 	Fovy       c.Float
 	Projection c.Int
 }
-type Camera = Camera3D
 
 // Camera2D, defines position/orientation in 2d space
 type Camera2D struct {
@@ -948,9 +188,6 @@ type Transform struct {
 	Rotation    Quaternion
 	Scale       Vector3
 }
-
-// Anim pose, an array of Transform[]
-type ModelAnimPose = *Transform
 
 // Bone, skeletal animation bone
 type BoneInfo struct {
@@ -1013,10 +250,6 @@ type Wave struct {
 	SampleSize c.Uint
 	Channels   c.Uint
 	Data       unsafe.Pointer
-}
-type RAudioBuffer struct {
-}
-type RAudioProcessor struct {
 }
 
 // AudioStream, custom audio stream
@@ -1088,21 +321,519 @@ type AutomationEventList struct {
 	Events   *AutomationEvent
 }
 
+// ----------------------------------------------------------------------------------
+// Enumerators Definition
+// ----------------------------------------------------------------------------------
+// System/Window config flags
+// NOTE: Every bit registers one state (use it with bit masks)
+// By default all flags are set to 0
+type ConfigFlags c.Uint
+
+const (
+	FLAG_VSYNC_HINT               ConfigFlags = 64
+	FLAG_FULLSCREEN_MODE          ConfigFlags = 2
+	FLAG_WINDOW_RESIZABLE         ConfigFlags = 4
+	FLAG_WINDOW_UNDECORATED       ConfigFlags = 8
+	FLAG_WINDOW_HIDDEN            ConfigFlags = 128
+	FLAG_WINDOW_MINIMIZED         ConfigFlags = 512
+	FLAG_WINDOW_MAXIMIZED         ConfigFlags = 1024
+	FLAG_WINDOW_UNFOCUSED         ConfigFlags = 2048
+	FLAG_WINDOW_TOPMOST           ConfigFlags = 4096
+	FLAG_WINDOW_ALWAYS_RUN        ConfigFlags = 256
+	FLAG_WINDOW_TRANSPARENT       ConfigFlags = 16
+	FLAG_WINDOW_HIGHDPI           ConfigFlags = 8192
+	FLAG_WINDOW_MOUSE_PASSTHROUGH ConfigFlags = 16384
+	FLAG_BORDERLESS_WINDOWED_MODE ConfigFlags = 32768
+	FLAG_MSAA_4X_HINT             ConfigFlags = 32
+	// Set to try enabling interlaced video format (for V3D)
+	FLAG_INTERLACED_HINT ConfigFlags = 65536
+)
+
+// Trace log level
+// NOTE: Organized by priority level
+type TraceLogLevel c.Uint
+
+const (
+	LOG_ALL     TraceLogLevel = 0
+	LOG_TRACE   TraceLogLevel = 1
+	LOG_DEBUG   TraceLogLevel = 2
+	LOG_INFO    TraceLogLevel = 3
+	LOG_WARNING TraceLogLevel = 4
+	LOG_ERROR   TraceLogLevel = 5
+	LOG_FATAL   TraceLogLevel = 6
+	// Disable logging
+	LOG_NONE TraceLogLevel = 7
+)
+
+// Keyboard keys (US keyboard layout)
+// NOTE: Use GetKeyPressed() to allow redefining required keys for alternative layouts
+type KeyboardKey c.Uint
+
+const (
+	KEY_NULL KeyboardKey = 0
+	// Alphanumeric keys
+	KEY_APOSTROPHE    KeyboardKey = 39
+	KEY_COMMA         KeyboardKey = 44
+	KEY_MINUS         KeyboardKey = 45
+	KEY_PERIOD        KeyboardKey = 46
+	KEY_SLASH         KeyboardKey = 47
+	KEY_ZERO          KeyboardKey = 48
+	KEY_ONE           KeyboardKey = 49
+	KEY_TWO           KeyboardKey = 50
+	KEY_THREE         KeyboardKey = 51
+	KEY_FOUR          KeyboardKey = 52
+	KEY_FIVE          KeyboardKey = 53
+	KEY_SIX           KeyboardKey = 54
+	KEY_SEVEN         KeyboardKey = 55
+	KEY_EIGHT         KeyboardKey = 56
+	KEY_NINE          KeyboardKey = 57
+	KEY_SEMICOLON     KeyboardKey = 59
+	KEY_EQUAL         KeyboardKey = 61
+	KEY_A             KeyboardKey = 65
+	KEY_B             KeyboardKey = 66
+	KEY_C             KeyboardKey = 67
+	KEY_D             KeyboardKey = 68
+	KEY_E             KeyboardKey = 69
+	KEY_F             KeyboardKey = 70
+	KEY_G             KeyboardKey = 71
+	KEY_H             KeyboardKey = 72
+	KEY_I             KeyboardKey = 73
+	KEY_J             KeyboardKey = 74
+	KEY_K             KeyboardKey = 75
+	KEY_L             KeyboardKey = 76
+	KEY_M             KeyboardKey = 77
+	KEY_N             KeyboardKey = 78
+	KEY_O             KeyboardKey = 79
+	KEY_P             KeyboardKey = 80
+	KEY_Q             KeyboardKey = 81
+	KEY_R             KeyboardKey = 82
+	KEY_S             KeyboardKey = 83
+	KEY_T             KeyboardKey = 84
+	KEY_U             KeyboardKey = 85
+	KEY_V             KeyboardKey = 86
+	KEY_W             KeyboardKey = 87
+	KEY_X             KeyboardKey = 88
+	KEY_Y             KeyboardKey = 89
+	KEY_Z             KeyboardKey = 90
+	KEY_LEFT_BRACKET  KeyboardKey = 91
+	KEY_BACKSLASH     KeyboardKey = 92
+	KEY_RIGHT_BRACKET KeyboardKey = 93
+	KEY_GRAVE         KeyboardKey = 96
+	// Function keys
+	KEY_SPACE         KeyboardKey = 32
+	KEY_ESCAPE        KeyboardKey = 256
+	KEY_ENTER         KeyboardKey = 257
+	KEY_TAB           KeyboardKey = 258
+	KEY_BACKSPACE     KeyboardKey = 259
+	KEY_INSERT        KeyboardKey = 260
+	KEY_DELETE        KeyboardKey = 261
+	KEY_RIGHT         KeyboardKey = 262
+	KEY_LEFT          KeyboardKey = 263
+	KEY_DOWN          KeyboardKey = 264
+	KEY_UP            KeyboardKey = 265
+	KEY_PAGE_UP       KeyboardKey = 266
+	KEY_PAGE_DOWN     KeyboardKey = 267
+	KEY_HOME          KeyboardKey = 268
+	KEY_END           KeyboardKey = 269
+	KEY_CAPS_LOCK     KeyboardKey = 280
+	KEY_SCROLL_LOCK   KeyboardKey = 281
+	KEY_NUM_LOCK      KeyboardKey = 282
+	KEY_PRINT_SCREEN  KeyboardKey = 283
+	KEY_PAUSE         KeyboardKey = 284
+	KEY_F1            KeyboardKey = 290
+	KEY_F2            KeyboardKey = 291
+	KEY_F3            KeyboardKey = 292
+	KEY_F4            KeyboardKey = 293
+	KEY_F5            KeyboardKey = 294
+	KEY_F6            KeyboardKey = 295
+	KEY_F7            KeyboardKey = 296
+	KEY_F8            KeyboardKey = 297
+	KEY_F9            KeyboardKey = 298
+	KEY_F10           KeyboardKey = 299
+	KEY_F11           KeyboardKey = 300
+	KEY_F12           KeyboardKey = 301
+	KEY_LEFT_SHIFT    KeyboardKey = 340
+	KEY_LEFT_CONTROL  KeyboardKey = 341
+	KEY_LEFT_ALT      KeyboardKey = 342
+	KEY_LEFT_SUPER    KeyboardKey = 343
+	KEY_RIGHT_SHIFT   KeyboardKey = 344
+	KEY_RIGHT_CONTROL KeyboardKey = 345
+	KEY_RIGHT_ALT     KeyboardKey = 346
+	KEY_RIGHT_SUPER   KeyboardKey = 347
+	KEY_KB_MENU       KeyboardKey = 348
+	// Keypad keys
+	KEY_KP_0        KeyboardKey = 320
+	KEY_KP_1        KeyboardKey = 321
+	KEY_KP_2        KeyboardKey = 322
+	KEY_KP_3        KeyboardKey = 323
+	KEY_KP_4        KeyboardKey = 324
+	KEY_KP_5        KeyboardKey = 325
+	KEY_KP_6        KeyboardKey = 326
+	KEY_KP_7        KeyboardKey = 327
+	KEY_KP_8        KeyboardKey = 328
+	KEY_KP_9        KeyboardKey = 329
+	KEY_KP_DECIMAL  KeyboardKey = 330
+	KEY_KP_DIVIDE   KeyboardKey = 331
+	KEY_KP_MULTIPLY KeyboardKey = 332
+	KEY_KP_SUBTRACT KeyboardKey = 333
+	KEY_KP_ADD      KeyboardKey = 334
+	KEY_KP_ENTER    KeyboardKey = 335
+	KEY_KP_EQUAL    KeyboardKey = 336
+	// Android key buttons
+	KEY_BACK      KeyboardKey = 4
+	KEY_MENU      KeyboardKey = 5
+	KEY_VOLUME_UP KeyboardKey = 24
+	// Key: Android volume down button
+	KEY_VOLUME_DOWN KeyboardKey = 25
+)
+
+// Mouse buttons
+type MouseButton c.Uint
+
+const (
+	MOUSE_BUTTON_LEFT    MouseButton = 0
+	MOUSE_BUTTON_RIGHT   MouseButton = 1
+	MOUSE_BUTTON_MIDDLE  MouseButton = 2
+	MOUSE_BUTTON_SIDE    MouseButton = 3
+	MOUSE_BUTTON_EXTRA   MouseButton = 4
+	MOUSE_BUTTON_FORWARD MouseButton = 5
+	MOUSE_BUTTON_BACK    MouseButton = 6
+)
+
+// Mouse cursor
+type MouseCursor c.Uint
+
+const (
+	MOUSE_CURSOR_DEFAULT       MouseCursor = 0
+	MOUSE_CURSOR_ARROW         MouseCursor = 1
+	MOUSE_CURSOR_IBEAM         MouseCursor = 2
+	MOUSE_CURSOR_CROSSHAIR     MouseCursor = 3
+	MOUSE_CURSOR_POINTING_HAND MouseCursor = 4
+	MOUSE_CURSOR_RESIZE_EW     MouseCursor = 5
+	MOUSE_CURSOR_RESIZE_NS     MouseCursor = 6
+	MOUSE_CURSOR_RESIZE_NWSE   MouseCursor = 7
+	MOUSE_CURSOR_RESIZE_NESW   MouseCursor = 8
+	MOUSE_CURSOR_RESIZE_ALL    MouseCursor = 9
+	// The operation-not-allowed shape
+	MOUSE_CURSOR_NOT_ALLOWED MouseCursor = 10
+)
+
+// Gamepad buttons
+type GamepadButton c.Uint
+
+const (
+	GAMEPAD_BUTTON_UNKNOWN          GamepadButton = 0
+	GAMEPAD_BUTTON_LEFT_FACE_UP     GamepadButton = 1
+	GAMEPAD_BUTTON_LEFT_FACE_RIGHT  GamepadButton = 2
+	GAMEPAD_BUTTON_LEFT_FACE_DOWN   GamepadButton = 3
+	GAMEPAD_BUTTON_LEFT_FACE_LEFT   GamepadButton = 4
+	GAMEPAD_BUTTON_RIGHT_FACE_UP    GamepadButton = 5
+	GAMEPAD_BUTTON_RIGHT_FACE_RIGHT GamepadButton = 6
+	GAMEPAD_BUTTON_RIGHT_FACE_DOWN  GamepadButton = 7
+	GAMEPAD_BUTTON_RIGHT_FACE_LEFT  GamepadButton = 8
+	GAMEPAD_BUTTON_LEFT_TRIGGER_1   GamepadButton = 9
+	GAMEPAD_BUTTON_LEFT_TRIGGER_2   GamepadButton = 10
+	GAMEPAD_BUTTON_RIGHT_TRIGGER_1  GamepadButton = 11
+	GAMEPAD_BUTTON_RIGHT_TRIGGER_2  GamepadButton = 12
+	GAMEPAD_BUTTON_MIDDLE_LEFT      GamepadButton = 13
+	GAMEPAD_BUTTON_MIDDLE           GamepadButton = 14
+	GAMEPAD_BUTTON_MIDDLE_RIGHT     GamepadButton = 15
+	GAMEPAD_BUTTON_LEFT_THUMB       GamepadButton = 16
+	// Gamepad joystick pressed button right
+	GAMEPAD_BUTTON_RIGHT_THUMB GamepadButton = 17
+)
+
+// Gamepad axes
+type GamepadAxis c.Uint
+
+const (
+	GAMEPAD_AXIS_LEFT_X       GamepadAxis = 0
+	GAMEPAD_AXIS_LEFT_Y       GamepadAxis = 1
+	GAMEPAD_AXIS_RIGHT_X      GamepadAxis = 2
+	GAMEPAD_AXIS_RIGHT_Y      GamepadAxis = 3
+	GAMEPAD_AXIS_LEFT_TRIGGER GamepadAxis = 4
+	// Gamepad back trigger right, pressure level: [1..-1]
+	GAMEPAD_AXIS_RIGHT_TRIGGER GamepadAxis = 5
+)
+
+// Material map index
+type MaterialMapIndex c.Uint
+
+const (
+	MATERIAL_MAP_ALBEDO     MaterialMapIndex = 0
+	MATERIAL_MAP_METALNESS  MaterialMapIndex = 1
+	MATERIAL_MAP_NORMAL     MaterialMapIndex = 2
+	MATERIAL_MAP_ROUGHNESS  MaterialMapIndex = 3
+	MATERIAL_MAP_OCCLUSION  MaterialMapIndex = 4
+	MATERIAL_MAP_EMISSION   MaterialMapIndex = 5
+	MATERIAL_MAP_HEIGHT     MaterialMapIndex = 6
+	MATERIAL_MAP_CUBEMAP    MaterialMapIndex = 7
+	MATERIAL_MAP_IRRADIANCE MaterialMapIndex = 8
+	MATERIAL_MAP_PREFILTER  MaterialMapIndex = 9
+	// Brdf material
+	MATERIAL_MAP_BRDF MaterialMapIndex = 10
+)
+
+// Shader location index
+// NOTE: Some locations are tried to be set automatically on shader loading,
+// but only if default attributes/uniforms names are found, check config.h for names
+type ShaderLocationIndex c.Uint
+
+const (
+	SHADER_LOC_VERTEX_POSITION       ShaderLocationIndex = 0
+	SHADER_LOC_VERTEX_TEXCOORD01     ShaderLocationIndex = 1
+	SHADER_LOC_VERTEX_TEXCOORD02     ShaderLocationIndex = 2
+	SHADER_LOC_VERTEX_NORMAL         ShaderLocationIndex = 3
+	SHADER_LOC_VERTEX_TANGENT        ShaderLocationIndex = 4
+	SHADER_LOC_VERTEX_COLOR          ShaderLocationIndex = 5
+	SHADER_LOC_MATRIX_MVP            ShaderLocationIndex = 6
+	SHADER_LOC_MATRIX_VIEW           ShaderLocationIndex = 7
+	SHADER_LOC_MATRIX_PROJECTION     ShaderLocationIndex = 8
+	SHADER_LOC_MATRIX_MODEL          ShaderLocationIndex = 9
+	SHADER_LOC_MATRIX_NORMAL         ShaderLocationIndex = 10
+	SHADER_LOC_VECTOR_VIEW           ShaderLocationIndex = 11
+	SHADER_LOC_COLOR_DIFFUSE         ShaderLocationIndex = 12
+	SHADER_LOC_COLOR_SPECULAR        ShaderLocationIndex = 13
+	SHADER_LOC_COLOR_AMBIENT         ShaderLocationIndex = 14
+	SHADER_LOC_MAP_ALBEDO            ShaderLocationIndex = 15
+	SHADER_LOC_MAP_METALNESS         ShaderLocationIndex = 16
+	SHADER_LOC_MAP_NORMAL            ShaderLocationIndex = 17
+	SHADER_LOC_MAP_ROUGHNESS         ShaderLocationIndex = 18
+	SHADER_LOC_MAP_OCCLUSION         ShaderLocationIndex = 19
+	SHADER_LOC_MAP_EMISSION          ShaderLocationIndex = 20
+	SHADER_LOC_MAP_HEIGHT            ShaderLocationIndex = 21
+	SHADER_LOC_MAP_CUBEMAP           ShaderLocationIndex = 22
+	SHADER_LOC_MAP_IRRADIANCE        ShaderLocationIndex = 23
+	SHADER_LOC_MAP_PREFILTER         ShaderLocationIndex = 24
+	SHADER_LOC_MAP_BRDF              ShaderLocationIndex = 25
+	SHADER_LOC_VERTEX_BONEIDS        ShaderLocationIndex = 26
+	SHADER_LOC_VERTEX_BONEWEIGHTS    ShaderLocationIndex = 27
+	SHADER_LOC_MATRIX_BONETRANSFORMS ShaderLocationIndex = 28
+	// Shader location: vertex attribute: instance transforms
+	SHADER_LOC_VERTEX_INSTANCETRANSFORM ShaderLocationIndex = 29
+)
+
+// Shader uniform data type
+type ShaderUniformDataType c.Uint
+
+const (
+	SHADER_UNIFORM_FLOAT  ShaderUniformDataType = 0
+	SHADER_UNIFORM_VEC2   ShaderUniformDataType = 1
+	SHADER_UNIFORM_VEC3   ShaderUniformDataType = 2
+	SHADER_UNIFORM_VEC4   ShaderUniformDataType = 3
+	SHADER_UNIFORM_INT    ShaderUniformDataType = 4
+	SHADER_UNIFORM_IVEC2  ShaderUniformDataType = 5
+	SHADER_UNIFORM_IVEC3  ShaderUniformDataType = 6
+	SHADER_UNIFORM_IVEC4  ShaderUniformDataType = 7
+	SHADER_UNIFORM_UINT   ShaderUniformDataType = 8
+	SHADER_UNIFORM_UIVEC2 ShaderUniformDataType = 9
+	SHADER_UNIFORM_UIVEC3 ShaderUniformDataType = 10
+	SHADER_UNIFORM_UIVEC4 ShaderUniformDataType = 11
+	// Shader uniform type: sampler2d
+	SHADER_UNIFORM_SAMPLER2D ShaderUniformDataType = 12
+)
+
+// Shader attribute data types
+type ShaderAttributeDataType c.Uint
+
+const (
+	SHADER_ATTRIB_FLOAT ShaderAttributeDataType = 0
+	SHADER_ATTRIB_VEC2  ShaderAttributeDataType = 1
+	SHADER_ATTRIB_VEC3  ShaderAttributeDataType = 2
+	// Shader attribute type: vec4 (4 float)
+	SHADER_ATTRIB_VEC4 ShaderAttributeDataType = 3
+)
+
+// Pixel formats
+// NOTE: Support depends on OpenGL version and platform
+type PixelFormat c.Uint
+
+const (
+	PIXELFORMAT_UNCOMPRESSED_GRAYSCALE    PixelFormat = 1
+	PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA   PixelFormat = 2
+	PIXELFORMAT_UNCOMPRESSED_R5G6B5       PixelFormat = 3
+	PIXELFORMAT_UNCOMPRESSED_R8G8B8       PixelFormat = 4
+	PIXELFORMAT_UNCOMPRESSED_R5G5B5A1     PixelFormat = 5
+	PIXELFORMAT_UNCOMPRESSED_R4G4B4A4     PixelFormat = 6
+	PIXELFORMAT_UNCOMPRESSED_R8G8B8A8     PixelFormat = 7
+	PIXELFORMAT_UNCOMPRESSED_R32          PixelFormat = 8
+	PIXELFORMAT_UNCOMPRESSED_R32G32B32    PixelFormat = 9
+	PIXELFORMAT_UNCOMPRESSED_R32G32B32A32 PixelFormat = 10
+	PIXELFORMAT_UNCOMPRESSED_R16          PixelFormat = 11
+	PIXELFORMAT_UNCOMPRESSED_R16G16B16    PixelFormat = 12
+	PIXELFORMAT_UNCOMPRESSED_R16G16B16A16 PixelFormat = 13
+	PIXELFORMAT_COMPRESSED_DXT1_RGB       PixelFormat = 14
+	PIXELFORMAT_COMPRESSED_DXT1_RGBA      PixelFormat = 15
+	PIXELFORMAT_COMPRESSED_DXT3_RGBA      PixelFormat = 16
+	PIXELFORMAT_COMPRESSED_DXT5_RGBA      PixelFormat = 17
+	PIXELFORMAT_COMPRESSED_ETC1_RGB       PixelFormat = 18
+	PIXELFORMAT_COMPRESSED_ETC2_RGB       PixelFormat = 19
+	PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA  PixelFormat = 20
+	PIXELFORMAT_COMPRESSED_PVRT_RGB       PixelFormat = 21
+	PIXELFORMAT_COMPRESSED_PVRT_RGBA      PixelFormat = 22
+	PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA  PixelFormat = 23
+	// 2 bpp
+	PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA PixelFormat = 24
+)
+
+// Texture parameters: filter mode
+// NOTE 1: Filtering considers mipmaps if available in the texture
+// NOTE 2: Filter is accordingly set for minification and magnification
+type TextureFilter c.Uint
+
+const (
+	TEXTURE_FILTER_POINT           TextureFilter = 0
+	TEXTURE_FILTER_BILINEAR        TextureFilter = 1
+	TEXTURE_FILTER_TRILINEAR       TextureFilter = 2
+	TEXTURE_FILTER_ANISOTROPIC_4X  TextureFilter = 3
+	TEXTURE_FILTER_ANISOTROPIC_8X  TextureFilter = 4
+	TEXTURE_FILTER_ANISOTROPIC_16X TextureFilter = 5
+)
+
+// Texture parameters: wrap mode
+type TextureWrap c.Uint
+
+const (
+	TEXTURE_WRAP_REPEAT        TextureWrap = 0
+	TEXTURE_WRAP_CLAMP         TextureWrap = 1
+	TEXTURE_WRAP_MIRROR_REPEAT TextureWrap = 2
+	// Mirrors and clamps to border the texture in tiled mode
+	TEXTURE_WRAP_MIRROR_CLAMP TextureWrap = 3
+)
+
+// Cubemap layouts
+type CubemapLayout c.Uint
+
+const (
+	CUBEMAP_LAYOUT_AUTO_DETECT         CubemapLayout = 0
+	CUBEMAP_LAYOUT_LINE_VERTICAL       CubemapLayout = 1
+	CUBEMAP_LAYOUT_LINE_HORIZONTAL     CubemapLayout = 2
+	CUBEMAP_LAYOUT_CROSS_THREE_BY_FOUR CubemapLayout = 3
+	// Layout is defined by a 4x3 cross with cubemap faces
+	CUBEMAP_LAYOUT_CROSS_FOUR_BY_THREE CubemapLayout = 4
+)
+
+// Font type, defines generation method
+type FontType c.Uint
+
+const (
+	FONT_DEFAULT FontType = 0
+	FONT_BITMAP  FontType = 1
+	// SDF font generation, requires external shader
+	FONT_SDF FontType = 2
+)
+
+// Color blending modes (pre-defined)
+type BlendMode c.Uint
+
+const (
+	BLEND_ALPHA             BlendMode = 0
+	BLEND_ADDITIVE          BlendMode = 1
+	BLEND_MULTIPLIED        BlendMode = 2
+	BLEND_ADD_COLORS        BlendMode = 3
+	BLEND_SUBTRACT_COLORS   BlendMode = 4
+	BLEND_ALPHA_PREMULTIPLY BlendMode = 5
+	BLEND_CUSTOM            BlendMode = 6
+	// Blend textures using custom rgb/alpha separate src/dst factors (use rlSetBlendFactorsSeparate())
+	BLEND_CUSTOM_SEPARATE BlendMode = 7
+)
+
+// Gesture
+// NOTE: Provided as bit-wise flags to enable only desired gestures
+type Gesture c.Uint
+
+const (
+	GESTURE_NONE        Gesture = 0
+	GESTURE_TAP         Gesture = 1
+	GESTURE_DOUBLETAP   Gesture = 2
+	GESTURE_HOLD        Gesture = 4
+	GESTURE_DRAG        Gesture = 8
+	GESTURE_SWIPE_RIGHT Gesture = 16
+	GESTURE_SWIPE_LEFT  Gesture = 32
+	GESTURE_SWIPE_UP    Gesture = 64
+	GESTURE_SWIPE_DOWN  Gesture = 128
+	GESTURE_PINCH_IN    Gesture = 256
+	// Pinch out gesture
+	GESTURE_PINCH_OUT Gesture = 512
+)
+
+// Camera system modes
+type CameraMode c.Uint
+
+const (
+	CAMERA_CUSTOM       CameraMode = 0
+	CAMERA_FREE         CameraMode = 1
+	CAMERA_ORBITAL      CameraMode = 2
+	CAMERA_FIRST_PERSON CameraMode = 3
+	// Camera third person
+	CAMERA_THIRD_PERSON CameraMode = 4
+)
+
+// Camera projection
+type CameraProjection c.Uint
+
+const (
+	CAMERA_PERSPECTIVE CameraProjection = 0
+	// Orthographic projection
+	CAMERA_ORTHOGRAPHIC CameraProjection = 1
+)
+
+// N-patch layout
+type NPatchLayout c.Uint
+
+const (
+	NPATCH_NINE_PATCH           NPatchLayout = 0
+	NPATCH_THREE_PATCH_VERTICAL NPatchLayout = 1
+	// Npatch layout: 3x1 tiles
+	NPATCH_THREE_PATCH_HORIZONTAL NPatchLayout = 2
+)
+
+type RAudioBuffer struct {
+}
+type RAudioProcessor struct {
+}
+
+// Quaternion, 4 components (Vector4 alias)
+type Quaternion = Vector4
+
+// Texture2D, same as Texture
+type Texture2D = Texture
+
+// TextureCubemap, same as Texture
+type TextureCubemap = Texture
+
+// RenderTexture2D, same as RenderTexture
+type RenderTexture2D = RenderTexture
+
+// Camera type fallback, defaults to Camera3D
+type Camera = Camera3D
+
+// Anim pose, an array of Transform[]
+type ModelAnimPose = *Transform
+
 // Callbacks to hook some internal functions
 // WARNING: These callbacks are intended for advanced users
 //
 // llgo:type C
 type TraceLogCallback = func(_llcppg_param1 c.Int, _llcppg_param2 *c.Char, _llcppg_param3 c.VaList)
 
+// FileIO: Load binary data
+//
 // llgo:type C
 type LoadFileDataCallback = func(_llcppg_param1 *c.Char, _llcppg_param2 *c.Int) *uint8
 
+// FileIO: Save binary data
+//
 // llgo:type C
 type SaveFileDataCallback = func(_llcppg_param1 *c.Char, _llcppg_param2 unsafe.Pointer, _llcppg_param3 c.Int) bool
 
+// FileIO: Load text data
+//
 // llgo:type C
 type LoadFileTextCallback = func(_llcppg_param1 *c.Char) *c.Char
 
+// FileIO: Save text data
+//
 // llgo:type C
 type SaveFileTextCallback = func(_llcppg_param1 *c.Char, _llcppg_param2 *c.Char) bool
 
@@ -1118,149 +849,245 @@ type AudioCallback = func(_llcppg_param1 unsafe.Pointer, _llcppg_param2 c.Uint)
 //go:linkname InitWindow C.InitWindow
 func InitWindow(width c.Int, height c.Int, title *c.Char)
 
+// Close window and unload OpenGL context
+//
 //go:linkname CloseWindow C.CloseWindow
 func CloseWindow()
 
+// Check if application should close (KEY_ESCAPE pressed or windows close icon clicked)
+//
 //go:linkname WindowShouldClose C.WindowShouldClose
 func WindowShouldClose() bool
 
+// Check if window has been initialized successfully
+//
 //go:linkname IsWindowReady C.IsWindowReady
 func IsWindowReady() bool
 
+// Check if window is currently fullscreen
+//
 //go:linkname IsWindowFullscreen C.IsWindowFullscreen
 func IsWindowFullscreen() bool
 
+// Check if window is currently hidden
+//
 //go:linkname IsWindowHidden C.IsWindowHidden
 func IsWindowHidden() bool
 
+// Check if window is currently minimized
+//
 //go:linkname IsWindowMinimized C.IsWindowMinimized
 func IsWindowMinimized() bool
 
+// Check if window is currently maximized
+//
 //go:linkname IsWindowMaximized C.IsWindowMaximized
 func IsWindowMaximized() bool
 
+// Check if window is currently focused
+//
 //go:linkname IsWindowFocused C.IsWindowFocused
 func IsWindowFocused() bool
 
+// Check if window has been resized last frame
+//
 //go:linkname IsWindowResized C.IsWindowResized
 func IsWindowResized() bool
 
+// Check if one specific window flag is enabled
+//
 //go:linkname IsWindowState C.IsWindowState
 func IsWindowState(flag c.Uint) bool
 
+// Set window configuration state using flags
+//
 //go:linkname SetWindowState C.SetWindowState
 func SetWindowState(flags c.Uint)
 
+// Clear window configuration state flags
+//
 //go:linkname ClearWindowState C.ClearWindowState
 func ClearWindowState(flags c.Uint)
 
+// Toggle window state: fullscreen/windowed, resizes monitor to match window resolution
+//
 //go:linkname ToggleFullscreen C.ToggleFullscreen
 func ToggleFullscreen()
 
+// Toggle window state: borderless windowed, resizes window to match monitor resolution
+//
 //go:linkname ToggleBorderlessWindowed C.ToggleBorderlessWindowed
 func ToggleBorderlessWindowed()
 
+// Set window state: maximized, if resizable
+//
 //go:linkname MaximizeWindow C.MaximizeWindow
 func MaximizeWindow()
 
+// Set window state: minimized, if resizable
+//
 //go:linkname MinimizeWindow C.MinimizeWindow
 func MinimizeWindow()
 
+// Restore window from being minimized/maximized
+//
 //go:linkname RestoreWindow C.RestoreWindow
 func RestoreWindow()
 
+// Set icon for window (single image, RGBA 32bit)
+//
 // llgo:link Image.SetWindowIcon C.SetWindowIcon
 func (self Image) SetWindowIcon() {
 }
 
+// Set icon for window (multiple images, RGBA 32bit)
+//
 // llgo:link (*Image).SetWindowIcons C.SetWindowIcons
 func (self *Image) SetWindowIcons(count c.Int) {
 }
 
+// Set title for window
+//
 //go:linkname SetWindowTitle C.SetWindowTitle
 func SetWindowTitle(title *c.Char)
 
+// Set window position on screen
+//
 //go:linkname SetWindowPosition C.SetWindowPosition
 func SetWindowPosition(x c.Int, y c.Int)
 
+// Set monitor for the current window
+//
 //go:linkname SetWindowMonitor C.SetWindowMonitor
 func SetWindowMonitor(monitor c.Int)
 
+// Set window minimum dimensions (for FLAG_WINDOW_RESIZABLE)
+//
 //go:linkname SetWindowMinSize C.SetWindowMinSize
 func SetWindowMinSize(width c.Int, height c.Int)
 
+// Set window maximum dimensions (for FLAG_WINDOW_RESIZABLE)
+//
 //go:linkname SetWindowMaxSize C.SetWindowMaxSize
 func SetWindowMaxSize(width c.Int, height c.Int)
 
+// Set window dimensions
+//
 //go:linkname SetWindowSize C.SetWindowSize
 func SetWindowSize(width c.Int, height c.Int)
 
+// Set window opacity [0.0f..1.0f]
+//
 //go:linkname SetWindowOpacity C.SetWindowOpacity
 func SetWindowOpacity(opacity c.Float)
 
+// Set window focused
+//
 //go:linkname SetWindowFocused C.SetWindowFocused
 func SetWindowFocused()
 
+// Get native window handle
+//
 //go:linkname GetWindowHandle C.GetWindowHandle
 func GetWindowHandle() unsafe.Pointer
 
+// Get current screen width
+//
 //go:linkname GetScreenWidth C.GetScreenWidth
 func GetScreenWidth() c.Int
 
+// Get current screen height
+//
 //go:linkname GetScreenHeight C.GetScreenHeight
 func GetScreenHeight() c.Int
 
+// Get current render width (it considers HiDPI)
+//
 //go:linkname GetRenderWidth C.GetRenderWidth
 func GetRenderWidth() c.Int
 
+// Get current render height (it considers HiDPI)
+//
 //go:linkname GetRenderHeight C.GetRenderHeight
 func GetRenderHeight() c.Int
 
+// Get number of connected monitors
+//
 //go:linkname GetMonitorCount C.GetMonitorCount
 func GetMonitorCount() c.Int
 
+// Get current monitor where window is placed
+//
 //go:linkname GetCurrentMonitor C.GetCurrentMonitor
 func GetCurrentMonitor() c.Int
 
+// Get specified monitor position
+//
 //go:linkname GetMonitorPosition C.GetMonitorPosition
 func GetMonitorPosition(monitor c.Int) Vector2
 
+// Get specified monitor width (current video mode used by monitor)
+//
 //go:linkname GetMonitorWidth C.GetMonitorWidth
 func GetMonitorWidth(monitor c.Int) c.Int
 
+// Get specified monitor height (current video mode used by monitor)
+//
 //go:linkname GetMonitorHeight C.GetMonitorHeight
 func GetMonitorHeight(monitor c.Int) c.Int
 
+// Get specified monitor physical width in millimetres
+//
 //go:linkname GetMonitorPhysicalWidth C.GetMonitorPhysicalWidth
 func GetMonitorPhysicalWidth(monitor c.Int) c.Int
 
+// Get specified monitor physical height in millimetres
+//
 //go:linkname GetMonitorPhysicalHeight C.GetMonitorPhysicalHeight
 func GetMonitorPhysicalHeight(monitor c.Int) c.Int
 
+// Get specified monitor refresh rate
+//
 //go:linkname GetMonitorRefreshRate C.GetMonitorRefreshRate
 func GetMonitorRefreshRate(monitor c.Int) c.Int
 
+// Get window position XY on monitor
+//
 //go:linkname GetWindowPosition C.GetWindowPosition
 func GetWindowPosition() Vector2
 
+// Get window scale DPI factor
+//
 //go:linkname GetWindowScaleDPI C.GetWindowScaleDPI
 func GetWindowScaleDPI() Vector2
 
+// Get the human-readable, UTF-8 encoded name of the specified monitor
+//
 //go:linkname GetMonitorName C.GetMonitorName
 func GetMonitorName(monitor c.Int) *c.Char
 
+// Set clipboard text content
+//
 //go:linkname SetClipboardText C.SetClipboardText
 func SetClipboardText(text *c.Char)
 
+// Get clipboard text content
+//
 //go:linkname GetClipboardText C.GetClipboardText
 func GetClipboardText() *c.Char
 
+// Get clipboard image content
+//
 //go:linkname GetClipboardImage C.GetClipboardImage
 func GetClipboardImage() Image
 
+// Enable waiting for events on EndDrawing(), no automatic event polling
+//
 //go:linkname EnableEventWaiting C.EnableEventWaiting
 func EnableEventWaiting()
 
+// Disable waiting for events on EndDrawing(), automatic events polling
+//
 //go:linkname DisableEventWaiting C.DisableEventWaiting
 func DisableEventWaiting()
 
@@ -1269,18 +1096,28 @@ func DisableEventWaiting()
 //go:linkname ShowCursor C.ShowCursor
 func ShowCursor()
 
+// Hides cursor
+//
 //go:linkname HideCursor C.HideCursor
 func HideCursor()
 
+// Check if cursor is not visible
+//
 //go:linkname IsCursorHidden C.IsCursorHidden
 func IsCursorHidden() bool
 
+// Enables cursor (unlock cursor)
+//
 //go:linkname EnableCursor C.EnableCursor
 func EnableCursor()
 
+// Disables cursor (lock cursor)
+//
 //go:linkname DisableCursor C.DisableCursor
 func DisableCursor()
 
+// Check if cursor is on the screen
+//
 //go:linkname IsCursorOnScreen C.IsCursorOnScreen
 func IsCursorOnScreen() bool
 
@@ -1290,56 +1127,88 @@ func IsCursorOnScreen() bool
 func (self Color) ClearBackground() {
 }
 
+// Setup canvas (framebuffer) to start drawing
+//
 //go:linkname BeginDrawing C.BeginDrawing
 func BeginDrawing()
 
+// End canvas drawing and swap buffers (double buffering)
+//
 //go:linkname EndDrawing C.EndDrawing
 func EndDrawing()
 
+// Begin 2D mode with custom camera (2D)
+//
 // llgo:link Camera2D.BeginMode2D C.BeginMode2D
 func (self Camera2D) BeginMode2D() {
 }
 
+// Ends 2D mode with custom camera
+//
 //go:linkname EndMode2D C.EndMode2D
 func EndMode2D()
 
+// Begin 3D mode with custom camera (3D)
+//
 // llgo:link Camera3D.BeginMode3D C.BeginMode3D
 func (self Camera3D) BeginMode3D() {
 }
 
+// Ends 3D mode and returns to default 2D orthographic mode
+//
 //go:linkname EndMode3D C.EndMode3D
 func EndMode3D()
 
+// Begin drawing to render texture
+//
 // llgo:link RenderTexture2D.BeginTextureMode C.BeginTextureMode
 func (self RenderTexture2D) BeginTextureMode() {
 }
 
+// Ends drawing to render texture
+//
 //go:linkname EndTextureMode C.EndTextureMode
 func EndTextureMode()
 
+// Begin custom shader drawing
+//
 // llgo:link Shader.BeginShaderMode C.BeginShaderMode
 func (self Shader) BeginShaderMode() {
 }
 
+// End custom shader drawing (use default shader)
+//
 //go:linkname EndShaderMode C.EndShaderMode
 func EndShaderMode()
 
+// Begin blending mode (alpha, additive, multiplied, subtract, custom)
+//
 //go:linkname BeginBlendMode C.BeginBlendMode
 func BeginBlendMode(mode c.Int)
 
+// End blending mode (reset to default: alpha blending)
+//
 //go:linkname EndBlendMode C.EndBlendMode
 func EndBlendMode()
 
+// Begin scissor mode (define screen area for following drawing)
+//
 //go:linkname BeginScissorMode C.BeginScissorMode
 func BeginScissorMode(x c.Int, y c.Int, width c.Int, height c.Int)
 
+// End scissor mode
+//
 //go:linkname EndScissorMode C.EndScissorMode
 func EndScissorMode()
 
+// Begin stereo rendering (requires VR simulator)
+//
 // llgo:link VrStereoConfig.BeginVrStereoMode C.BeginVrStereoMode
 func (self VrStereoConfig) BeginVrStereoMode() {
 }
 
+// End stereo rendering (requires VR simulator)
+//
 //go:linkname EndVrStereoMode C.EndVrStereoMode
 func EndVrStereoMode()
 
@@ -1350,6 +1219,8 @@ func (self VrDeviceInfo) LoadVrStereoConfig() VrStereoConfig {
 	return VrStereoConfig{}
 }
 
+// Unload VR stereo config
+//
 // llgo:link VrStereoConfig.Unload C.UnloadVrStereoConfig
 func (self VrStereoConfig) Unload() {
 }
@@ -1360,79 +1231,113 @@ func (self VrStereoConfig) Unload() {
 //go:linkname LoadShader C.LoadShader
 func LoadShader(vsFileName *c.Char, fsFileName *c.Char) Shader
 
+// Load shader from code strings and bind default locations
+//
 //go:linkname LoadShaderFromMemory C.LoadShaderFromMemory
 func LoadShaderFromMemory(vsCode *c.Char, fsCode *c.Char) Shader
 
+// Check if a shader is valid (loaded on GPU)
+//
 // llgo:link Shader.IsShaderValid C.IsShaderValid
 func (self Shader) IsShaderValid() bool {
 	return false
 }
 
+// Get shader uniform location
+//
 // llgo:link Shader.Location C.GetShaderLocation
 func (self Shader) Location(uniformName *c.Char) c.Int {
 	return 0
 }
 
+// Get shader attribute location
+//
 // llgo:link Shader.LocationAttrib C.GetShaderLocationAttrib
 func (self Shader) LocationAttrib(attribName *c.Char) c.Int {
 	return 0
 }
 
+// Set shader uniform value
+//
 // llgo:link Shader.SetShaderValue C.SetShaderValue
 func (self Shader) SetShaderValue(locIndex c.Int, value unsafe.Pointer, uniformType c.Int) {
 }
 
+// Set shader uniform value vector
+//
 // llgo:link Shader.SetShaderValueV C.SetShaderValueV
 func (self Shader) SetShaderValueV(locIndex c.Int, value unsafe.Pointer, uniformType c.Int, count c.Int) {
 }
 
+// Set shader uniform value (matrix 4x4)
+//
 // llgo:link Shader.SetShaderValueMatrix C.SetShaderValueMatrix
 func (self Shader) SetShaderValueMatrix(locIndex c.Int, mat Matrix) {
 }
 
+// Set shader uniform value and bind the texture (sampler2d)
+//
 // llgo:link Shader.SetShaderValueTexture C.SetShaderValueTexture
 func (self Shader) SetShaderValueTexture(locIndex c.Int, texture Texture2D) {
 }
 
+// Unload shader from GPU memory (VRAM)
+//
 // llgo:link Shader.Unload C.UnloadShader
 func (self Shader) Unload() {
 }
 
+// Get a ray trace from screen position (i.e mouse)
+//
 // llgo:link Vector2.ScreenToWorldRay C.GetScreenToWorldRay
 func (self Vector2) ScreenToWorldRay(camera Camera) Ray {
 	return Ray{}
 }
 
+// Get a ray trace from screen position (i.e mouse) in a viewport
+//
 // llgo:link Vector2.ScreenToWorldRayEx C.GetScreenToWorldRayEx
 func (self Vector2) ScreenToWorldRayEx(camera Camera, width c.Int, height c.Int) Ray {
 	return Ray{}
 }
 
+// Get the screen space position for a 3d world space position
+//
 // llgo:link Vector3.WorldToScreen C.GetWorldToScreen
 func (self Vector3) WorldToScreen(camera Camera) Vector2 {
 	return Vector2{}
 }
 
+// Get size position for a 3d world space position
+//
 // llgo:link Vector3.WorldToScreenEx C.GetWorldToScreenEx
 func (self Vector3) WorldToScreenEx(camera Camera, width c.Int, height c.Int) Vector2 {
 	return Vector2{}
 }
 
+// Get the screen space position for a 2d camera world space position
+//
 // llgo:link Vector2.WorldToScreen2D C.GetWorldToScreen2D
 func (self Vector2) WorldToScreen2D(camera Camera2D) Vector2 {
 	return self
 }
 
+// Get the world space position for a 2d camera screen space position
+//
 // llgo:link Vector2.ScreenToWorld2D C.GetScreenToWorld2D
 func (self Vector2) ScreenToWorld2D(camera Camera2D) Vector2 {
 	return self
 }
 
+// Get camera transform matrix (view matrix)
+//
 // llgo:link Camera.Matrix C.GetCameraMatrix
 func (self Camera) Matrix() Matrix {
 	return Matrix{}
 }
 
+// Get camera 2d transform matrix
+//
 // llgo:link Camera2D.CameraMatrix2D C.GetCameraMatrix2D
 func (self Camera2D) CameraMatrix2D() Matrix {
 	return Matrix{}
@@ -1443,12 +1348,18 @@ func (self Camera2D) CameraMatrix2D() Matrix {
 //go:linkname SetTargetFPS C.SetTargetFPS
 func SetTargetFPS(fps c.Int)
 
+// Get time in seconds for last frame drawn (delta time)
+//
 //go:linkname GetFrameTime C.GetFrameTime
 func GetFrameTime() c.Float
 
+// Get elapsed time in seconds since InitWindow()
+//
 //go:linkname GetTime C.GetTime
 func GetTime() c.Double
 
+// Get current FPS
+//
 //go:linkname GetFPS C.GetFPS
 func GetFPS() c.Int
 
@@ -1460,9 +1371,13 @@ func GetFPS() c.Int
 //go:linkname SwapScreenBuffer C.SwapScreenBuffer
 func SwapScreenBuffer()
 
+// Register all input events
+//
 //go:linkname PollInputEvents C.PollInputEvents
 func PollInputEvents()
 
+// Wait for some time (halt program execution)
+//
 //go:linkname WaitTime C.WaitTime
 func WaitTime(seconds c.Double)
 
@@ -1471,12 +1386,18 @@ func WaitTime(seconds c.Double)
 //go:linkname SetRandomSeed C.SetRandomSeed
 func SetRandomSeed(seed c.Uint)
 
+// Get a random value between min and max (both included)
+//
 //go:linkname GetRandomValue C.GetRandomValue
 func GetRandomValue(min c.Int, max c.Int) c.Int
 
+// Load random values sequence, no values repeated
+//
 //go:linkname LoadRandomSequence C.LoadRandomSequence
 func LoadRandomSequence(count c.Uint, min c.Int, max c.Int) *c.Int
 
+// Unload random values sequence
+//
 //go:linkname UnloadRandomSequence C.UnloadRandomSequence
 func UnloadRandomSequence(sequence *c.Int)
 
@@ -1485,9 +1406,13 @@ func UnloadRandomSequence(sequence *c.Int)
 //go:linkname TakeScreenshot C.TakeScreenshot
 func TakeScreenshot(fileName *c.Char)
 
+// Setup init configuration flags (view FLAGS)
+//
 //go:linkname SetConfigFlags C.SetConfigFlags
 func SetConfigFlags(flags c.Uint)
 
+// Open URL with default system browser (if available)
+//
 //go:linkname OpenURL C.OpenURL
 func OpenURL(url *c.Char)
 
@@ -1496,9 +1421,13 @@ func OpenURL(url *c.Char)
 //go:linkname SetTraceLogLevel C.SetTraceLogLevel
 func SetTraceLogLevel(logLevel c.Int)
 
+// Show trace log messages (LOG_DEBUG, LOG_INFO, LOG_WARNING, LOG_ERROR...)
+//
 //go:linkname TraceLog C.TraceLog
 func TraceLog(logLevel c.Int, text *c.Char, __llgo_va_list ...any)
 
+// Set custom trace log
+//
 //go:linkname SetTraceLogCallback C.SetTraceLogCallback
 func SetTraceLogCallback(callback TraceLogCallback)
 
@@ -1507,9 +1436,13 @@ func SetTraceLogCallback(callback TraceLogCallback)
 //go:linkname MemAlloc C.MemAlloc
 func MemAlloc(size c.Uint) unsafe.Pointer
 
+// Internal memory reallocator
+//
 //go:linkname MemRealloc C.MemRealloc
 func MemRealloc(ptr unsafe.Pointer, size c.Uint) unsafe.Pointer
 
+// Internal memory free
+//
 //go:linkname MemFree C.MemFree
 func MemFree(ptr unsafe.Pointer)
 
@@ -1518,21 +1451,33 @@ func MemFree(ptr unsafe.Pointer)
 //go:linkname LoadFileData C.LoadFileData
 func LoadFileData(fileName *c.Char, dataSize *c.Int) *uint8
 
+// Unload file data allocated by LoadFileData()
+//
 //go:linkname UnloadFileData C.UnloadFileData
 func UnloadFileData(data *uint8)
 
+// Save data to file from byte array (write), returns true on success
+//
 //go:linkname SaveFileData C.SaveFileData
 func SaveFileData(fileName *c.Char, data unsafe.Pointer, dataSize c.Int) bool
 
+// Export data to code (.h), returns true on success
+//
 //go:linkname ExportDataAsCode C.ExportDataAsCode
 func ExportDataAsCode(data *uint8, dataSize c.Int, fileName *c.Char) bool
 
+// Load text data from file (read), returns a '\0' terminated string
+//
 //go:linkname LoadFileText C.LoadFileText
 func LoadFileText(fileName *c.Char) *c.Char
 
+// Unload file text data allocated by LoadFileText()
+//
 //go:linkname UnloadFileText C.UnloadFileText
 func UnloadFileText(text *c.Char)
 
+// Save text data to file (write), string must be '\0' terminated, returns true on success
+//
 //go:linkname SaveFileText C.SaveFileText
 func SaveFileText(fileName *c.Char, text *c.Char) bool
 
@@ -1542,104 +1487,170 @@ func SaveFileText(fileName *c.Char, text *c.Char) bool
 //go:linkname SetLoadFileDataCallback C.SetLoadFileDataCallback
 func SetLoadFileDataCallback(callback LoadFileDataCallback)
 
+// Set custom file binary data saver
+//
 //go:linkname SetSaveFileDataCallback C.SetSaveFileDataCallback
 func SetSaveFileDataCallback(callback SaveFileDataCallback)
 
+// Set custom file text data loader
+//
 //go:linkname SetLoadFileTextCallback C.SetLoadFileTextCallback
 func SetLoadFileTextCallback(callback LoadFileTextCallback)
 
+// Set custom file text data saver
+//
 //go:linkname SetSaveFileTextCallback C.SetSaveFileTextCallback
 func SetSaveFileTextCallback(callback SaveFileTextCallback)
 
+// Rename file (if exists)
+//
 //go:linkname FileRename C.FileRename
 func FileRename(fileName *c.Char, fileRename *c.Char) c.Int
 
+// Remove file (if exists)
+//
 //go:linkname FileRemove C.FileRemove
 func FileRemove(fileName *c.Char) c.Int
 
+// Copy file from one path to another, dstPath created if it doesn't exist
+//
 //go:linkname FileCopy C.FileCopy
 func FileCopy(srcPath *c.Char, dstPath *c.Char) c.Int
 
+// Move file from one directory to another, dstPath created if it doesn't exist
+//
 //go:linkname FileMove C.FileMove
 func FileMove(srcPath *c.Char, dstPath *c.Char) c.Int
 
+// Replace text in an existing file
+//
 //go:linkname FileTextReplace C.FileTextReplace
 func FileTextReplace(fileName *c.Char, search *c.Char, replacement *c.Char) c.Int
 
+// Find text in existing file
+//
 //go:linkname FileTextFindIndex C.FileTextFindIndex
 func FileTextFindIndex(fileName *c.Char, search *c.Char) c.Int
 
+// Check if file exists
+//
 //go:linkname FileExists C.FileExists
 func FileExists(fileName *c.Char) bool
 
+// Check if a directory path exists
+//
 //go:linkname DirectoryExists C.DirectoryExists
 func DirectoryExists(dirPath *c.Char) bool
 
+// Check file extension (recommended include point: .png, .wav)
+//
 //go:linkname IsFileExtension C.IsFileExtension
 func IsFileExtension(fileName *c.Char, ext *c.Char) bool
 
+// Get file length in bytes (NOTE: GetFileSize() conflicts with windows.h)
+//
 //go:linkname GetFileLength C.GetFileLength
 func GetFileLength(fileName *c.Char) c.Int
 
+// Get file modification time (last write time)
+//
 //go:linkname GetFileModTime C.GetFileModTime
 func GetFileModTime(fileName *c.Char) c.Long
 
+// Get pointer to extension for a filename string (includes dot: '.png')
+//
 //go:linkname GetFileExtension C.GetFileExtension
 func GetFileExtension(fileName *c.Char) *c.Char
 
+// Get pointer to filename for a path string
+//
 //go:linkname GetFileName C.GetFileName
 func GetFileName(filePath *c.Char) *c.Char
 
+// Get filename string without extension (uses static string)
+//
 //go:linkname GetFileNameWithoutExt C.GetFileNameWithoutExt
 func GetFileNameWithoutExt(filePath *c.Char) *c.Char
 
+// Get full path for a given fileName with path (uses static string)
+//
 //go:linkname GetDirectoryPath C.GetDirectoryPath
 func GetDirectoryPath(filePath *c.Char) *c.Char
 
+// Get previous directory path for a given path (uses static string)
+//
 //go:linkname GetPrevDirectoryPath C.GetPrevDirectoryPath
 func GetPrevDirectoryPath(dirPath *c.Char) *c.Char
 
+// Get current working directory (uses static string)
+//
 //go:linkname GetWorkingDirectory C.GetWorkingDirectory
 func GetWorkingDirectory() *c.Char
 
+// Get the directory of the running application (uses static string)
+//
 //go:linkname GetApplicationDirectory C.GetApplicationDirectory
 func GetApplicationDirectory() *c.Char
 
+// Create directories (including full path requested), returns 0 on success
+//
 //go:linkname MakeDirectory C.MakeDirectory
 func MakeDirectory(dirPath *c.Char) c.Int
 
+// Change working directory, return true on success
+//
 //go:linkname ChangeDirectory C.ChangeDirectory
 func ChangeDirectory(dirPath *c.Char) bool
 
+// Check if a given path is a file or a directory
+//
 //go:linkname IsPathFile C.IsPathFile
 func IsPathFile(path *c.Char) bool
 
+// Check if fileName is valid for the platform/OS
+//
 //go:linkname IsFileNameValid C.IsFileNameValid
 func IsFileNameValid(fileName *c.Char) bool
 
+// Load directory filepaths, files and directories, no subdirs scan
+//
 //go:linkname LoadDirectoryFiles C.LoadDirectoryFiles
 func LoadDirectoryFiles(dirPath *c.Char) FilePathList
 
+// Load directory filepaths with extension filtering and subdir scan; some filters available: "*.*", "FILES*", "DIRS*"
+//
 //go:linkname LoadDirectoryFilesEx C.LoadDirectoryFilesEx
 func LoadDirectoryFilesEx(basePath *c.Char, filter *c.Char, scanSubdirs bool) FilePathList
 
+// Unload filepaths
+//
 // llgo:link FilePathList.UnloadDirectoryFiles C.UnloadDirectoryFiles
 func (self FilePathList) UnloadDirectoryFiles() {
 }
 
+// Check if a file has been dropped into window
+//
 //go:linkname IsFileDropped C.IsFileDropped
 func IsFileDropped() bool
 
+// Load dropped filepaths
+//
 //go:linkname LoadDroppedFiles C.LoadDroppedFiles
 func LoadDroppedFiles() FilePathList
 
+// Unload dropped filepaths
+//
 // llgo:link FilePathList.UnloadDroppedFiles C.UnloadDroppedFiles
 func (self FilePathList) UnloadDroppedFiles() {
 }
 
+// Get the file count in a directory
+//
 //go:linkname GetDirectoryFileCount C.GetDirectoryFileCount
 func GetDirectoryFileCount(dirPath *c.Char) c.Uint
 
+// Get the file count in a directory with extension filtering and recursive directory scan. Use 'DIR' in the filter string to include directories in the result
+//
 //go:linkname GetDirectoryFileCountEx C.GetDirectoryFileCountEx
 func GetDirectoryFileCountEx(basePath *c.Char, filter *c.Char, scanSubdirs bool) c.Uint
 
@@ -1648,24 +1659,38 @@ func GetDirectoryFileCountEx(basePath *c.Char, filter *c.Char, scanSubdirs bool)
 //go:linkname CompressData C.CompressData
 func CompressData(data *uint8, dataSize c.Int, compDataSize *c.Int) *uint8
 
+// Decompress data (DEFLATE algorithm), memory must be MemFree()
+//
 //go:linkname DecompressData C.DecompressData
 func DecompressData(compData *uint8, compDataSize c.Int, dataSize *c.Int) *uint8
 
+// Encode data to Base64 string (includes NULL terminator), memory must be MemFree()
+//
 //go:linkname EncodeDataBase64 C.EncodeDataBase64
 func EncodeDataBase64(data *uint8, dataSize c.Int, outputSize *c.Int) *c.Char
 
+// Decode Base64 string (expected NULL terminated), memory must be MemFree()
+//
 //go:linkname DecodeDataBase64 C.DecodeDataBase64
 func DecodeDataBase64(text *c.Char, outputSize *c.Int) *uint8
 
+// Compute CRC32 hash code
+//
 //go:linkname ComputeCRC32 C.ComputeCRC32
 func ComputeCRC32(data *uint8, dataSize c.Int) c.Uint
 
+// Compute MD5 hash code, returns static int[4] (16 bytes)
+//
 //go:linkname ComputeMD5 C.ComputeMD5
 func ComputeMD5(data *uint8, dataSize c.Int) *c.Uint
 
+// Compute SHA1 hash code, returns static int[5] (20 bytes)
+//
 //go:linkname ComputeSHA1 C.ComputeSHA1
 func ComputeSHA1(data *uint8, dataSize c.Int) *c.Uint
 
+// Compute SHA256 hash code, returns static int[8] (32 bytes)
+//
 //go:linkname ComputeSHA256 C.ComputeSHA256
 func ComputeSHA256(data *uint8, dataSize c.Int) *c.Uint
 
@@ -1674,28 +1699,42 @@ func ComputeSHA256(data *uint8, dataSize c.Int) *c.Uint
 //go:linkname LoadAutomationEventList C.LoadAutomationEventList
 func LoadAutomationEventList(fileName *c.Char) AutomationEventList
 
+// Unload automation events list from file
+//
 // llgo:link AutomationEventList.Unload C.UnloadAutomationEventList
 func (self AutomationEventList) Unload() {
 }
 
+// Export automation events list as text file
+//
 // llgo:link AutomationEventList.Export C.ExportAutomationEventList
 func (self AutomationEventList) Export(fileName *c.Char) bool {
 	return false
 }
 
+// Set automation event list to record to
+//
 // llgo:link (*AutomationEventList).Set C.SetAutomationEventList
 func (self *AutomationEventList) Set() {
 }
 
+// Set automation event internal base frame to start recording
+//
 //go:linkname SetAutomationEventBaseFrame C.SetAutomationEventBaseFrame
 func SetAutomationEventBaseFrame(frame c.Int)
 
+// Start recording automation events (AutomationEventList must be set)
+//
 //go:linkname StartAutomationEventRecording C.StartAutomationEventRecording
 func StartAutomationEventRecording()
 
+// Stop recording automation events
+//
 //go:linkname StopAutomationEventRecording C.StopAutomationEventRecording
 func StopAutomationEventRecording()
 
+// Play a recorded automation event
+//
 // llgo:link AutomationEvent.Play C.PlayAutomationEvent
 func (self AutomationEvent) Play() {
 }
@@ -1705,27 +1744,43 @@ func (self AutomationEvent) Play() {
 //go:linkname IsKeyPressed C.IsKeyPressed
 func IsKeyPressed(key c.Int) bool
 
+// Check if a key has been pressed again
+//
 //go:linkname IsKeyPressedRepeat C.IsKeyPressedRepeat
 func IsKeyPressedRepeat(key c.Int) bool
 
+// Check if a key is being pressed
+//
 //go:linkname IsKeyDown C.IsKeyDown
 func IsKeyDown(key c.Int) bool
 
+// Check if a key has been released once
+//
 //go:linkname IsKeyReleased C.IsKeyReleased
 func IsKeyReleased(key c.Int) bool
 
+// Check if a key is NOT being pressed
+//
 //go:linkname IsKeyUp C.IsKeyUp
 func IsKeyUp(key c.Int) bool
 
+// Get key pressed (keycode), call it multiple times for keys queued, returns 0 when the queue is empty
+//
 //go:linkname GetKeyPressed C.GetKeyPressed
 func GetKeyPressed() c.Int
 
+// Get char pressed (unicode), call it multiple times for chars queued, returns 0 when the queue is empty
+//
 //go:linkname GetCharPressed C.GetCharPressed
 func GetCharPressed() c.Int
 
+// Get name of a QWERTY key on the current keyboard layout (eg returns string 'q' for KEY_A on an AZERTY keyboard)
+//
 //go:linkname GetKeyName C.GetKeyName
 func GetKeyName(key c.Int) *c.Char
 
+// Set a custom key to exit program (default is ESC)
+//
 //go:linkname SetExitKey C.SetExitKey
 func SetExitKey(key c.Int)
 
@@ -1734,33 +1789,53 @@ func SetExitKey(key c.Int)
 //go:linkname IsGamepadAvailable C.IsGamepadAvailable
 func IsGamepadAvailable(gamepad c.Int) bool
 
+// Get gamepad internal name id
+//
 //go:linkname GetGamepadName C.GetGamepadName
 func GetGamepadName(gamepad c.Int) *c.Char
 
+// Check if a gamepad button has been pressed once
+//
 //go:linkname IsGamepadButtonPressed C.IsGamepadButtonPressed
 func IsGamepadButtonPressed(gamepad c.Int, button c.Int) bool
 
+// Check if a gamepad button is being pressed
+//
 //go:linkname IsGamepadButtonDown C.IsGamepadButtonDown
 func IsGamepadButtonDown(gamepad c.Int, button c.Int) bool
 
+// Check if a gamepad button has been released once
+//
 //go:linkname IsGamepadButtonReleased C.IsGamepadButtonReleased
 func IsGamepadButtonReleased(gamepad c.Int, button c.Int) bool
 
+// Check if a gamepad button is NOT being pressed
+//
 //go:linkname IsGamepadButtonUp C.IsGamepadButtonUp
 func IsGamepadButtonUp(gamepad c.Int, button c.Int) bool
 
+// Get the last gamepad button pressed
+//
 //go:linkname GetGamepadButtonPressed C.GetGamepadButtonPressed
 func GetGamepadButtonPressed() c.Int
 
+// Get axis count for a gamepad
+//
 //go:linkname GetGamepadAxisCount C.GetGamepadAxisCount
 func GetGamepadAxisCount(gamepad c.Int) c.Int
 
+// Get movement value for a gamepad axis
+//
 //go:linkname GetGamepadAxisMovement C.GetGamepadAxisMovement
 func GetGamepadAxisMovement(gamepad c.Int, axis c.Int) c.Float
 
+// Set internal gamepad mappings (SDL_GameControllerDB)
+//
 //go:linkname SetGamepadMappings C.SetGamepadMappings
 func SetGamepadMappings(mappings *c.Char) c.Int
 
+// Set gamepad vibration for both motors (duration in seconds)
+//
 //go:linkname SetGamepadVibration C.SetGamepadVibration
 func SetGamepadVibration(gamepad c.Int, leftMotor c.Float, rightMotor c.Float, duration c.Float)
 
@@ -1769,42 +1844,68 @@ func SetGamepadVibration(gamepad c.Int, leftMotor c.Float, rightMotor c.Float, d
 //go:linkname IsMouseButtonPressed C.IsMouseButtonPressed
 func IsMouseButtonPressed(button c.Int) bool
 
+// Check if a mouse button is being pressed
+//
 //go:linkname IsMouseButtonDown C.IsMouseButtonDown
 func IsMouseButtonDown(button c.Int) bool
 
+// Check if a mouse button has been released once
+//
 //go:linkname IsMouseButtonReleased C.IsMouseButtonReleased
 func IsMouseButtonReleased(button c.Int) bool
 
+// Check if a mouse button is NOT being pressed
+//
 //go:linkname IsMouseButtonUp C.IsMouseButtonUp
 func IsMouseButtonUp(button c.Int) bool
 
+// Get mouse position X
+//
 //go:linkname GetMouseX C.GetMouseX
 func GetMouseX() c.Int
 
+// Get mouse position Y
+//
 //go:linkname GetMouseY C.GetMouseY
 func GetMouseY() c.Int
 
+// Get mouse position XY
+//
 //go:linkname GetMousePosition C.GetMousePosition
 func GetMousePosition() Vector2
 
+// Get mouse delta between frames
+//
 //go:linkname GetMouseDelta C.GetMouseDelta
 func GetMouseDelta() Vector2
 
+// Set mouse position XY
+//
 //go:linkname SetMousePosition C.SetMousePosition
 func SetMousePosition(x c.Int, y c.Int)
 
+// Set mouse offset
+//
 //go:linkname SetMouseOffset C.SetMouseOffset
 func SetMouseOffset(offsetX c.Int, offsetY c.Int)
 
+// Set mouse scaling
+//
 //go:linkname SetMouseScale C.SetMouseScale
 func SetMouseScale(scaleX c.Float, scaleY c.Float)
 
+// Get mouse wheel movement for X or Y, whichever is larger
+//
 //go:linkname GetMouseWheelMove C.GetMouseWheelMove
 func GetMouseWheelMove() c.Float
 
+// Get mouse wheel movement for both X and Y
+//
 //go:linkname GetMouseWheelMoveV C.GetMouseWheelMoveV
 func GetMouseWheelMoveV() Vector2
 
+// Set mouse cursor
+//
 //go:linkname SetMouseCursor C.SetMouseCursor
 func SetMouseCursor(cursor c.Int)
 
@@ -1813,15 +1914,23 @@ func SetMouseCursor(cursor c.Int)
 //go:linkname GetTouchX C.GetTouchX
 func GetTouchX() c.Int
 
+// Get touch position Y for touch point 0 (relative to screen size)
+//
 //go:linkname GetTouchY C.GetTouchY
 func GetTouchY() c.Int
 
+// Get touch position XY for a touch point index (relative to screen size)
+//
 //go:linkname GetTouchPosition C.GetTouchPosition
 func GetTouchPosition(index c.Int) Vector2
 
+// Get touch point identifier for given index
+//
 //go:linkname GetTouchPointId C.GetTouchPointId
 func GetTouchPointId(index c.Int) c.Int
 
+// Get number of touch points
+//
 //go:linkname GetTouchPointCount C.GetTouchPointCount
 func GetTouchPointCount() c.Int
 
@@ -1832,24 +1941,38 @@ func GetTouchPointCount() c.Int
 //go:linkname SetGesturesEnabled C.SetGesturesEnabled
 func SetGesturesEnabled(flags c.Uint)
 
+// Check if a gesture have been detected
+//
 //go:linkname IsGestureDetected C.IsGestureDetected
 func IsGestureDetected(gesture c.Uint) bool
 
+// Get latest detected gesture
+//
 //go:linkname GetGestureDetected C.GetGestureDetected
 func GetGestureDetected() c.Int
 
+// Get gesture hold time in seconds
+//
 //go:linkname GetGestureHoldDuration C.GetGestureHoldDuration
 func GetGestureHoldDuration() c.Float
 
+// Get gesture drag vector
+//
 //go:linkname GetGestureDragVector C.GetGestureDragVector
 func GetGestureDragVector() Vector2
 
+// Get gesture drag angle
+//
 //go:linkname GetGestureDragAngle C.GetGestureDragAngle
 func GetGestureDragAngle() c.Float
 
+// Get gesture pinch delta
+//
 //go:linkname GetGesturePinchVector C.GetGesturePinchVector
 func GetGesturePinchVector() Vector2
 
+// Get gesture pinch angle
+//
 //go:linkname GetGesturePinchAngle C.GetGesturePinchAngle
 func GetGesturePinchAngle() c.Float
 
@@ -1861,6 +1984,8 @@ func GetGesturePinchAngle() c.Float
 func (self *Camera) Update(mode c.Int) {
 }
 
+// Update camera movement/rotation
+//
 // llgo:link (*Camera).UpdateCameraPro C.UpdateCameraPro
 func (self *Camera) UpdateCameraPro(movement Vector3, rotation Vector3, zoom c.Float) {
 }
@@ -1876,9 +2001,13 @@ func (self *Camera) UpdateCameraPro(movement Vector3, rotation Vector3, zoom c.F
 func (self Texture2D) SetShapesTexture(source Rectangle) {
 }
 
+// Get texture that is used for shapes drawing
+//
 //go:linkname GetShapesTexture C.GetShapesTexture
 func GetShapesTexture() Texture2D
 
+// Get texture source rectangle that is used for shapes drawing
+//
 //go:linkname GetShapesTextureRectangle C.GetShapesTextureRectangle
 func GetShapesTextureRectangle() Rectangle
 
@@ -1887,149 +2016,227 @@ func GetShapesTextureRectangle() Rectangle
 //go:linkname DrawPixel C.DrawPixel
 func DrawPixel(posX c.Int, posY c.Int, color Color)
 
+// Draw a pixel using geometry (Vector version) [Can be slow, use with care]
+//
 // llgo:link Vector2.DrawPixelV C.DrawPixelV
 func (self Vector2) DrawPixelV(color Color) {
 }
 
+// Draw a line
+//
 //go:linkname DrawLine C.DrawLine
 func DrawLine(startPosX c.Int, startPosY c.Int, endPosX c.Int, endPosY c.Int, color Color)
 
+// Draw a line (using gl lines)
+//
 // llgo:link Vector2.DrawLineV C.DrawLineV
 func (self Vector2) DrawLineV(endPos Vector2, color Color) {
 }
 
+// Draw a line (using triangles/quads)
+//
 // llgo:link Vector2.DrawLineEx C.DrawLineEx
 func (self Vector2) DrawLineEx(endPos Vector2, thick c.Float, color Color) {
 }
 
+// Draw lines sequence (using gl lines)
+//
 // llgo:link (*Vector2).DrawLineStrip C.DrawLineStrip
 func (self *Vector2) DrawLineStrip(pointCount c.Int, color Color) {
 }
 
+// Draw line segment cubic-bezier in-out interpolation
+//
 // llgo:link Vector2.DrawLineBezier C.DrawLineBezier
 func (self Vector2) DrawLineBezier(endPos Vector2, thick c.Float, color Color) {
 }
 
+// Draw a dashed line
+//
 // llgo:link Vector2.DrawLineDashed C.DrawLineDashed
 func (self Vector2) DrawLineDashed(endPos Vector2, dashSize c.Int, spaceSize c.Int, color Color) {
 }
 
+// Draw a color-filled circle
+//
 //go:linkname DrawCircle C.DrawCircle
 func DrawCircle(centerX c.Int, centerY c.Int, radius c.Float, color Color)
 
+// Draw a color-filled circle (Vector version)
+//
 // llgo:link Vector2.DrawCircleV C.DrawCircleV
 func (self Vector2) DrawCircleV(radius c.Float, color Color) {
 }
 
+// Draw a gradient-filled circle
+//
 // llgo:link Vector2.DrawCircleGradient C.DrawCircleGradient
 func (self Vector2) DrawCircleGradient(radius c.Float, inner Color, outer Color) {
 }
 
+// Draw a piece of a circle
+//
 // llgo:link Vector2.DrawCircleSector C.DrawCircleSector
 func (self Vector2) DrawCircleSector(radius c.Float, startAngle c.Float, endAngle c.Float, segments c.Int, color Color) {
 }
 
+// Draw circle sector outline
+//
 // llgo:link Vector2.DrawCircleSectorLines C.DrawCircleSectorLines
 func (self Vector2) DrawCircleSectorLines(radius c.Float, startAngle c.Float, endAngle c.Float, segments c.Int, color Color) {
 }
 
+// Draw circle outline
+//
 //go:linkname DrawCircleLines C.DrawCircleLines
 func DrawCircleLines(centerX c.Int, centerY c.Int, radius c.Float, color Color)
 
+// Draw circle outline (Vector version)
+//
 // llgo:link Vector2.DrawCircleLinesV C.DrawCircleLinesV
 func (self Vector2) DrawCircleLinesV(radius c.Float, color Color) {
 }
 
+// Draw ellipse
+//
 //go:linkname DrawEllipse C.DrawEllipse
 func DrawEllipse(centerX c.Int, centerY c.Int, radiusH c.Float, radiusV c.Float, color Color)
 
+// Draw ellipse (Vector version)
+//
 // llgo:link Vector2.DrawEllipseV C.DrawEllipseV
 func (self Vector2) DrawEllipseV(radiusH c.Float, radiusV c.Float, color Color) {
 }
 
+// Draw ellipse outline
+//
 //go:linkname DrawEllipseLines C.DrawEllipseLines
 func DrawEllipseLines(centerX c.Int, centerY c.Int, radiusH c.Float, radiusV c.Float, color Color)
 
+// Draw ellipse outline (Vector version)
+//
 // llgo:link Vector2.DrawEllipseLinesV C.DrawEllipseLinesV
 func (self Vector2) DrawEllipseLinesV(radiusH c.Float, radiusV c.Float, color Color) {
 }
 
+// Draw ring
+//
 // llgo:link Vector2.DrawRing C.DrawRing
 func (self Vector2) DrawRing(innerRadius c.Float, outerRadius c.Float, startAngle c.Float, endAngle c.Float, segments c.Int, color Color) {
 }
 
+// Draw ring outline
+//
 // llgo:link Vector2.DrawRingLines C.DrawRingLines
 func (self Vector2) DrawRingLines(innerRadius c.Float, outerRadius c.Float, startAngle c.Float, endAngle c.Float, segments c.Int, color Color) {
 }
 
+// Draw a color-filled rectangle
+//
 //go:linkname DrawRectangle C.DrawRectangle
 func DrawRectangle(posX c.Int, posY c.Int, width c.Int, height c.Int, color Color)
 
+// Draw a color-filled rectangle (Vector version)
+//
 // llgo:link Vector2.DrawRectangleV C.DrawRectangleV
 func (self Vector2) DrawRectangleV(size Vector2, color Color) {
 }
 
+// Draw a color-filled rectangle
+//
 // llgo:link Rectangle.DrawRectangleRec C.DrawRectangleRec
 func (self Rectangle) DrawRectangleRec(color Color) {
 }
 
+// Draw a color-filled rectangle with pro parameters
+//
 // llgo:link Rectangle.DrawRectanglePro C.DrawRectanglePro
 func (self Rectangle) DrawRectanglePro(origin Vector2, rotation c.Float, color Color) {
 }
 
+// Draw a vertical-gradient-filled rectangle
+//
 //go:linkname DrawRectangleGradientV C.DrawRectangleGradientV
 func DrawRectangleGradientV(posX c.Int, posY c.Int, width c.Int, height c.Int, top Color, bottom Color)
 
+// Draw a horizontal-gradient-filled rectangle
+//
 //go:linkname DrawRectangleGradientH C.DrawRectangleGradientH
 func DrawRectangleGradientH(posX c.Int, posY c.Int, width c.Int, height c.Int, left Color, right Color)
 
+// Draw a gradient-filled rectangle with custom vertex colors
+//
 // llgo:link Rectangle.DrawRectangleGradientEx C.DrawRectangleGradientEx
 func (self Rectangle) DrawRectangleGradientEx(topLeft Color, bottomLeft Color, bottomRight Color, topRight Color) {
 }
 
+// Draw rectangle outline
+//
 //go:linkname DrawRectangleLines C.DrawRectangleLines
 func DrawRectangleLines(posX c.Int, posY c.Int, width c.Int, height c.Int, color Color)
 
+// Draw rectangle outline with extended parameters
+//
 // llgo:link Rectangle.DrawRectangleLinesEx C.DrawRectangleLinesEx
 func (self Rectangle) DrawRectangleLinesEx(lineThick c.Float, color Color) {
 }
 
+// Draw rectangle with rounded edges
+//
 // llgo:link Rectangle.DrawRectangleRounded C.DrawRectangleRounded
 func (self Rectangle) DrawRectangleRounded(roundness c.Float, segments c.Int, color Color) {
 }
 
+// Draw rectangle lines with rounded edges
+//
 // llgo:link Rectangle.DrawRectangleRoundedLines C.DrawRectangleRoundedLines
 func (self Rectangle) DrawRectangleRoundedLines(roundness c.Float, segments c.Int, color Color) {
 }
 
+// Draw rectangle with rounded edges outline
+//
 // llgo:link Rectangle.DrawRectangleRoundedLinesEx C.DrawRectangleRoundedLinesEx
 func (self Rectangle) DrawRectangleRoundedLinesEx(roundness c.Float, segments c.Int, lineThick c.Float, color Color) {
 }
 
+// Draw a color-filled triangle (vertex in counter-clockwise order!)
+//
 // llgo:link Vector2.DrawTriangle C.DrawTriangle
 func (self Vector2) DrawTriangle(v2 Vector2, v3 Vector2, color Color) {
 }
 
+// Draw triangle outline (vertex in counter-clockwise order!)
+//
 // llgo:link Vector2.DrawTriangleLines C.DrawTriangleLines
 func (self Vector2) DrawTriangleLines(v2 Vector2, v3 Vector2, color Color) {
 }
 
+// Draw a triangle fan defined by points (first vertex is the center)
+//
 // llgo:link (*Vector2).DrawTriangleFan C.DrawTriangleFan
 func (self *Vector2) DrawTriangleFan(pointCount c.Int, color Color) {
 }
 
+// Draw a triangle strip defined by points
+//
 // llgo:link (*Vector2).DrawTriangleStrip C.DrawTriangleStrip
 func (self *Vector2) DrawTriangleStrip(pointCount c.Int, color Color) {
 }
 
+// Draw a regular polygon (Vector version)
+//
 // llgo:link Vector2.DrawPoly C.DrawPoly
 func (self Vector2) DrawPoly(sides c.Int, radius c.Float, rotation c.Float, color Color) {
 }
 
+// Draw a polygon outline of n sides
+//
 // llgo:link Vector2.DrawPolyLines C.DrawPolyLines
 func (self Vector2) DrawPolyLines(sides c.Int, radius c.Float, rotation c.Float, color Color) {
 }
 
+// Draw a polygon outline of n sides with extended parameters
+//
 // llgo:link Vector2.DrawPolyLinesEx C.DrawPolyLinesEx
 func (self Vector2) DrawPolyLinesEx(sides c.Int, radius c.Float, rotation c.Float, lineThick c.Float, color Color) {
 }
@@ -2040,38 +2247,56 @@ func (self Vector2) DrawPolyLinesEx(sides c.Int, radius c.Float, rotation c.Floa
 func (self *Vector2) DrawSplineLinear(pointCount c.Int, thick c.Float, color Color) {
 }
 
+// Draw spline: B-Spline, minimum 4 points
+//
 // llgo:link (*Vector2).DrawSplineBasis C.DrawSplineBasis
 func (self *Vector2) DrawSplineBasis(pointCount c.Int, thick c.Float, color Color) {
 }
 
+// Draw spline: Catmull-Rom, minimum 4 points
+//
 // llgo:link (*Vector2).DrawSplineCatmullRom C.DrawSplineCatmullRom
 func (self *Vector2) DrawSplineCatmullRom(pointCount c.Int, thick c.Float, color Color) {
 }
 
+// Draw spline: Quadratic Bezier, minimum 3 points (1 control point): [p1, c2, p3, c4...]
+//
 // llgo:link (*Vector2).DrawSplineBezierQuadratic C.DrawSplineBezierQuadratic
 func (self *Vector2) DrawSplineBezierQuadratic(pointCount c.Int, thick c.Float, color Color) {
 }
 
+// Draw spline: Cubic Bezier, minimum 4 points (2 control points): [p1, c2, c3, p4, c5, c6...]
+//
 // llgo:link (*Vector2).DrawSplineBezierCubic C.DrawSplineBezierCubic
 func (self *Vector2) DrawSplineBezierCubic(pointCount c.Int, thick c.Float, color Color) {
 }
 
+// Draw spline segment: Linear, 2 points
+//
 // llgo:link Vector2.DrawSplineSegmentLinear C.DrawSplineSegmentLinear
 func (self Vector2) DrawSplineSegmentLinear(p2 Vector2, thick c.Float, color Color) {
 }
 
+// Draw spline segment: B-Spline, 4 points
+//
 // llgo:link Vector2.DrawSplineSegmentBasis C.DrawSplineSegmentBasis
 func (self Vector2) DrawSplineSegmentBasis(p2 Vector2, p3 Vector2, p4 Vector2, thick c.Float, color Color) {
 }
 
+// Draw spline segment: Catmull-Rom, 4 points
+//
 // llgo:link Vector2.DrawSplineSegmentCatmullRom C.DrawSplineSegmentCatmullRom
 func (self Vector2) DrawSplineSegmentCatmullRom(p2 Vector2, p3 Vector2, p4 Vector2, thick c.Float, color Color) {
 }
 
+// Draw spline segment: Quadratic Bezier, 2 points, 1 control point
+//
 // llgo:link Vector2.DrawSplineSegmentBezierQuadratic C.DrawSplineSegmentBezierQuadratic
 func (self Vector2) DrawSplineSegmentBezierQuadratic(c2 Vector2, p3 Vector2, thick c.Float, color Color) {
 }
 
+// Draw spline segment: Cubic Bezier, 2 points, 2 control points
+//
 // llgo:link Vector2.DrawSplineSegmentBezierCubic C.DrawSplineSegmentBezierCubic
 func (self Vector2) DrawSplineSegmentBezierCubic(c2 Vector2, c3 Vector2, p4 Vector2, thick c.Float, color Color) {
 }
@@ -2083,21 +2308,29 @@ func (self Vector2) SplinePointLinear(endPos Vector2, t c.Float) Vector2 {
 	return self
 }
 
+// Get (evaluate) spline point: B-Spline
+//
 // llgo:link Vector2.SplinePointBasis C.GetSplinePointBasis
 func (self Vector2) SplinePointBasis(p2 Vector2, p3 Vector2, p4 Vector2, t c.Float) Vector2 {
 	return self
 }
 
+// Get (evaluate) spline point: Catmull-Rom
+//
 // llgo:link Vector2.SplinePointCatmullRom C.GetSplinePointCatmullRom
 func (self Vector2) SplinePointCatmullRom(p2 Vector2, p3 Vector2, p4 Vector2, t c.Float) Vector2 {
 	return self
 }
 
+// Get (evaluate) spline point: Quadratic Bezier
+//
 // llgo:link Vector2.SplinePointBezierQuad C.GetSplinePointBezierQuad
 func (self Vector2) SplinePointBezierQuad(c2 Vector2, p3 Vector2, t c.Float) Vector2 {
 	return self
 }
 
+// Get (evaluate) spline point: Cubic Bezier
+//
 // llgo:link Vector2.SplinePointBezierCubic C.GetSplinePointBezierCubic
 func (self Vector2) SplinePointBezierCubic(c2 Vector2, c3 Vector2, p4 Vector2, t c.Float) Vector2 {
 	return self
@@ -2108,51 +2341,71 @@ func (self Vector2) SplinePointBezierCubic(c2 Vector2, c3 Vector2, p4 Vector2, t
 //go:linkname CheckCollisionRecs C.CheckCollisionRecs
 func CheckCollisionRecs(rec1 Rectangle, rec2 Rectangle) bool
 
+// Check collision between two circles
+//
 // llgo:link Vector2.CheckCollisionCircles C.CheckCollisionCircles
 func (self Vector2) CheckCollisionCircles(radius1 c.Float, center2 Vector2, radius2 c.Float) bool {
 	return false
 }
 
+// Check collision between circle and rectangle
+//
 // llgo:link Vector2.CheckCollisionCircleRec C.CheckCollisionCircleRec
 func (self Vector2) CheckCollisionCircleRec(radius c.Float, rec Rectangle) bool {
 	return false
 }
 
+// Check if circle collides with a line created betweeen two points [p1] and [p2]
+//
 // llgo:link Vector2.CheckCollisionCircleLine C.CheckCollisionCircleLine
 func (self Vector2) CheckCollisionCircleLine(radius c.Float, p1 Vector2, p2 Vector2) bool {
 	return false
 }
 
+// Check if point is inside rectangle
+//
 // llgo:link Vector2.CheckCollisionPointRec C.CheckCollisionPointRec
 func (self Vector2) CheckCollisionPointRec(rec Rectangle) bool {
 	return false
 }
 
+// Check if point is inside circle
+//
 // llgo:link Vector2.CheckCollisionPointCircle C.CheckCollisionPointCircle
 func (self Vector2) CheckCollisionPointCircle(center Vector2, radius c.Float) bool {
 	return false
 }
 
+// Check if point is inside a triangle
+//
 // llgo:link Vector2.CheckCollisionPointTriangle C.CheckCollisionPointTriangle
 func (self Vector2) CheckCollisionPointTriangle(p1 Vector2, p2 Vector2, p3 Vector2) bool {
 	return false
 }
 
+// Check if point belongs to line created between two points [p1] and [p2] with defined margin in pixels [threshold]
+//
 // llgo:link Vector2.CheckCollisionPointLine C.CheckCollisionPointLine
 func (self Vector2) CheckCollisionPointLine(p1 Vector2, p2 Vector2, threshold c.Int) bool {
 	return false
 }
 
+// Check if point is within a polygon described by array of vertices
+//
 // llgo:link Vector2.CheckCollisionPointPoly C.CheckCollisionPointPoly
 func (self Vector2) CheckCollisionPointPoly(points *Vector2, pointCount c.Int) bool {
 	return false
 }
 
+// Check the collision between two lines defined by two points each, returns collision point by reference
+//
 // llgo:link Vector2.CheckCollisionLines C.CheckCollisionLines
 func (self Vector2) CheckCollisionLines(endPos1 Vector2, startPos2 Vector2, endPos2 Vector2, collisionPoint *Vector2) bool {
 	return false
 }
 
+// Get collision rectangle for two rectangles collision
+//
 //go:linkname GetCollisionRec C.GetCollisionRec
 func GetCollisionRec(rec1 Rectangle, rec2 Rectangle) Rectangle
 
@@ -2162,45 +2415,67 @@ func GetCollisionRec(rec1 Rectangle, rec2 Rectangle) Rectangle
 //go:linkname LoadImage C.LoadImage
 func LoadImage(fileName *c.Char) Image
 
+// Load image from RAW file data
+//
 //go:linkname LoadImageRaw C.LoadImageRaw
 func LoadImageRaw(fileName *c.Char, width c.Int, height c.Int, format c.Int, headerSize c.Int) Image
 
+// Load image sequence from file (frames appended to image.data)
+//
 //go:linkname LoadImageAnim C.LoadImageAnim
 func LoadImageAnim(fileName *c.Char, frames *c.Int) Image
 
+// Load image sequence from memory buffer
+//
 //go:linkname LoadImageAnimFromMemory C.LoadImageAnimFromMemory
 func LoadImageAnimFromMemory(fileType *c.Char, fileData *uint8, dataSize c.Int, frames *c.Int) Image
 
+// Load image from memory buffer, fileType refers to extension: i.e. '.png'
+//
 //go:linkname LoadImageFromMemory C.LoadImageFromMemory
 func LoadImageFromMemory(fileType *c.Char, fileData *uint8, dataSize c.Int) Image
 
+// Load image from GPU texture data
+//
 // llgo:link Texture2D.LoadImageFromTexture C.LoadImageFromTexture
 func (self Texture2D) LoadImageFromTexture() Image {
 	return Image{}
 }
 
+// Load image from screen buffer and (screenshot)
+//
 //go:linkname LoadImageFromScreen C.LoadImageFromScreen
 func LoadImageFromScreen() Image
 
+// Check if an image is valid (data and parameters)
+//
 // llgo:link Image.IsImageValid C.IsImageValid
 func (self Image) IsImageValid() bool {
 	return false
 }
 
+// Unload image from CPU memory (RAM)
+//
 // llgo:link Image.Unload C.UnloadImage
 func (self Image) Unload() {
 }
 
+// Export image data to file, returns true on success
+//
 // llgo:link Image.Export C.ExportImage
 func (self Image) Export(fileName *c.Char) bool {
 	return false
 }
 
+// Export image to memory buffer, memory must be MemFree()
+//
 // llgo:link Image.ExportImageToMemory C.ExportImageToMemory
 func (self Image) ExportImageToMemory(fileType *c.Char, fileSize *c.Int) *uint8 {
 	return nil
 }
 
+// Export image as code file defining an array of bytes, returns true on success
+//
 // llgo:link Image.ExportImageAsCode C.ExportImageAsCode
 func (self Image) ExportImageAsCode(fileName *c.Char) bool {
 	return false
@@ -2211,27 +2486,43 @@ func (self Image) ExportImageAsCode(fileName *c.Char) bool {
 //go:linkname GenImageColor C.GenImageColor
 func GenImageColor(width c.Int, height c.Int, color Color) Image
 
+// Generate image: linear gradient, direction in degrees [0..360], 0=Vertical gradient
+//
 //go:linkname GenImageGradientLinear C.GenImageGradientLinear
 func GenImageGradientLinear(width c.Int, height c.Int, direction c.Int, start Color, end Color) Image
 
+// Generate image: radial gradient
+//
 //go:linkname GenImageGradientRadial C.GenImageGradientRadial
 func GenImageGradientRadial(width c.Int, height c.Int, density c.Float, inner Color, outer Color) Image
 
+// Generate image: square gradient
+//
 //go:linkname GenImageGradientSquare C.GenImageGradientSquare
 func GenImageGradientSquare(width c.Int, height c.Int, density c.Float, inner Color, outer Color) Image
 
+// Generate image: checked
+//
 //go:linkname GenImageChecked C.GenImageChecked
 func GenImageChecked(width c.Int, height c.Int, checksX c.Int, checksY c.Int, col1 Color, col2 Color) Image
 
+// Generate image: white noise
+//
 //go:linkname GenImageWhiteNoise C.GenImageWhiteNoise
 func GenImageWhiteNoise(width c.Int, height c.Int, factor c.Float) Image
 
+// Generate image: perlin noise
+//
 //go:linkname GenImagePerlinNoise C.GenImagePerlinNoise
 func GenImagePerlinNoise(width c.Int, height c.Int, offsetX c.Int, offsetY c.Int, scale c.Float) Image
 
+// Generate image: cellular algorithm, bigger tileSize means bigger cells
+//
 //go:linkname GenImageCellular C.GenImageCellular
 func GenImageCellular(width c.Int, height c.Int, tileSize c.Int) Image
 
+// Generate image: grayscale image from text data
+//
 //go:linkname GenImageText C.GenImageText
 func GenImageText(width c.Int, height c.Int, text *c.Char) Image
 
@@ -2242,147 +2533,217 @@ func (self Image) Copy() Image {
 	return self
 }
 
+// Create an image from another image piece
+//
 // llgo:link Image.From C.ImageFromImage
 func (self Image) From(rec Rectangle) Image {
 	return self
 }
 
+// Create an image from a selected channel of another image (GRAYSCALE)
+//
 // llgo:link Image.FromChannel C.ImageFromChannel
 func (self Image) FromChannel(selectedChannel c.Int) Image {
 	return self
 }
 
+// Create an image from text (default font)
+//
 //go:linkname ImageText C.ImageText
 func ImageText(text *c.Char, fontSize c.Int, color Color) Image
 
+// Create an image from text (custom sprite font)
+//
 // llgo:link Font.ImageTextEx C.ImageTextEx
 func (self Font) ImageTextEx(text *c.Char, fontSize c.Float, spacing c.Float, tint Color) Image {
 	return Image{}
 }
 
+// Convert image data to desired format
+//
 // llgo:link (*Image).ImageFormat C.ImageFormat
 func (self *Image) ImageFormat(newFormat c.Int) {
 }
 
+// Convert image to POT (power-of-two)
+//
 // llgo:link (*Image).ToPOT C.ImageToPOT
 func (self *Image) ToPOT(fill Color) {
 }
 
+// Crop an image to a defined rectangle
+//
 // llgo:link (*Image).Crop C.ImageCrop
 func (self *Image) Crop(crop Rectangle) {
 }
 
+// Crop image depending on alpha value
+//
 // llgo:link (*Image).AlphaCrop C.ImageAlphaCrop
 func (self *Image) AlphaCrop(threshold c.Float) {
 }
 
+// Clear alpha channel to desired color
+//
 // llgo:link (*Image).AlphaClear C.ImageAlphaClear
 func (self *Image) AlphaClear(color Color, threshold c.Float) {
 }
 
+// Apply alpha mask to image
+//
 // llgo:link (*Image).AlphaMask C.ImageAlphaMask
 func (self *Image) AlphaMask(alphaMask Image) {
 }
 
+// Premultiply alpha channel
+//
 // llgo:link (*Image).AlphaPremultiply C.ImageAlphaPremultiply
 func (self *Image) AlphaPremultiply() {
 }
 
+// Apply Gaussian blur using a box blur approximation
+//
 // llgo:link (*Image).BlurGaussian C.ImageBlurGaussian
 func (self *Image) BlurGaussian(blurSize c.Int) {
 }
 
+// Apply custom square convolution kernel to image
+//
 // llgo:link (*Image).KernelConvolution C.ImageKernelConvolution
 func (self *Image) KernelConvolution(kernel *c.Float, kernelSize c.Int) {
 }
 
+// Resize image (Bicubic scaling algorithm)
+//
 // llgo:link (*Image).Resize C.ImageResize
 func (self *Image) Resize(newWidth c.Int, newHeight c.Int) {
 }
 
+// Resize image (Nearest-Neighbor scaling algorithm)
+//
 // llgo:link (*Image).ResizeNN C.ImageResizeNN
 func (self *Image) ResizeNN(newWidth c.Int, newHeight c.Int) {
 }
 
+// Resize canvas and fill with color
+//
 // llgo:link (*Image).ResizeCanvas C.ImageResizeCanvas
 func (self *Image) ResizeCanvas(newWidth c.Int, newHeight c.Int, offsetX c.Int, offsetY c.Int, fill Color) {
 }
 
+// Compute all mipmap levels for a provided image
+//
 // llgo:link (*Image).ImageMipmaps C.ImageMipmaps
 func (self *Image) ImageMipmaps() {
 }
 
+// Dither image data to 16bpp or lower (Floyd-Steinberg dithering)
+//
 // llgo:link (*Image).Dither C.ImageDither
 func (self *Image) Dither(rBpp c.Int, gBpp c.Int, bBpp c.Int, aBpp c.Int) {
 }
 
+// Flip image vertically
+//
 // llgo:link (*Image).FlipVertical C.ImageFlipVertical
 func (self *Image) FlipVertical() {
 }
 
+// Flip image horizontally
+//
 // llgo:link (*Image).FlipHorizontal C.ImageFlipHorizontal
 func (self *Image) FlipHorizontal() {
 }
 
+// Rotate image by input angle in degrees (-359 to 359)
+//
 // llgo:link (*Image).Rotate C.ImageRotate
 func (self *Image) Rotate(degrees c.Int) {
 }
 
+// Rotate image clockwise 90deg
+//
 // llgo:link (*Image).RotateCW C.ImageRotateCW
 func (self *Image) RotateCW() {
 }
 
+// Rotate image counter-clockwise 90deg
+//
 // llgo:link (*Image).RotateCCW C.ImageRotateCCW
 func (self *Image) RotateCCW() {
 }
 
+// Modify image color: tint
+//
 // llgo:link (*Image).ColorTint C.ImageColorTint
 func (self *Image) ColorTint(color Color) {
 }
 
+// Modify image color: invert
+//
 // llgo:link (*Image).ColorInvert C.ImageColorInvert
 func (self *Image) ColorInvert() {
 }
 
+// Modify image color: grayscale
+//
 // llgo:link (*Image).ColorGrayscale C.ImageColorGrayscale
 func (self *Image) ColorGrayscale() {
 }
 
+// Modify image color: contrast (-100 to 100)
+//
 // llgo:link (*Image).ColorContrast C.ImageColorContrast
 func (self *Image) ColorContrast(contrast c.Float) {
 }
 
+// Modify image color: brightness (-255 to 255)
+//
 // llgo:link (*Image).ColorBrightness C.ImageColorBrightness
 func (self *Image) ColorBrightness(brightness c.Int) {
 }
 
+// Modify image color: replace color
+//
 // llgo:link (*Image).ColorReplace C.ImageColorReplace
 func (self *Image) ColorReplace(color Color, replace Color) {
 }
 
+// Load color data from image as a Color array (RGBA - 32bit)
+//
 // llgo:link Image.LoadImageColors C.LoadImageColors
 func (self Image) LoadImageColors() *Color {
 	return nil
 }
 
+// Load colors palette from image as a Color array (RGBA - 32bit)
+//
 // llgo:link Image.LoadImagePalette C.LoadImagePalette
 func (self Image) LoadImagePalette(maxPaletteSize c.Int, colorCount *c.Int) *Color {
 	return nil
 }
 
+// Unload color data loaded with LoadImageColors()
+//
 // llgo:link (*Color).UnloadImageColors C.UnloadImageColors
 func (self *Color) UnloadImageColors() {
 }
 
+// Unload colors palette loaded with LoadImagePalette()
+//
 // llgo:link (*Color).UnloadImagePalette C.UnloadImagePalette
 func (self *Color) UnloadImagePalette() {
 }
 
+// Get image alpha border rectangle
+//
 // llgo:link Image.AlphaBorder C.GetImageAlphaBorder
 func (self Image) AlphaBorder(threshold c.Float) Rectangle {
 	return Rectangle{}
 }
 
+// Get image pixel color at (x, y) position
+//
 // llgo:link Image.Color C.GetImageColor
 func (self Image) Color(x c.Int, y c.Int) Color {
 	return Color{}
@@ -2395,86 +2756,128 @@ func (self Image) Color(x c.Int, y c.Int) Color {
 func (self *Image) ClearBackground(color Color) {
 }
 
+// Draw pixel within an image
+//
 // llgo:link (*Image).DrawPixel C.ImageDrawPixel
 func (self *Image) DrawPixel(posX c.Int, posY c.Int, color Color) {
 }
 
+// Draw pixel within an image (Vector version)
+//
 // llgo:link (*Image).DrawPixelV C.ImageDrawPixelV
 func (self *Image) DrawPixelV(position Vector2, color Color) {
 }
 
+// Draw line within an image
+//
 // llgo:link (*Image).DrawLine C.ImageDrawLine
 func (self *Image) DrawLine(startPosX c.Int, startPosY c.Int, endPosX c.Int, endPosY c.Int, color Color) {
 }
 
+// Draw line within an image (Vector version)
+//
 // llgo:link (*Image).DrawLineV C.ImageDrawLineV
 func (self *Image) DrawLineV(start Vector2, end Vector2, color Color) {
 }
 
+// Draw a line defining thickness within an image
+//
 // llgo:link (*Image).DrawLineEx C.ImageDrawLineEx
 func (self *Image) DrawLineEx(start Vector2, end Vector2, thick c.Int, color Color) {
 }
 
+// Draw a filled circle within an image
+//
 // llgo:link (*Image).DrawCircle C.ImageDrawCircle
 func (self *Image) DrawCircle(centerX c.Int, centerY c.Int, radius c.Int, color Color) {
 }
 
+// Draw a filled circle within an image (Vector version)
+//
 // llgo:link (*Image).DrawCircleV C.ImageDrawCircleV
 func (self *Image) DrawCircleV(center Vector2, radius c.Int, color Color) {
 }
 
+// Draw circle outline within an image
+//
 // llgo:link (*Image).DrawCircleLines C.ImageDrawCircleLines
 func (self *Image) DrawCircleLines(centerX c.Int, centerY c.Int, radius c.Int, color Color) {
 }
 
+// Draw circle outline within an image (Vector version)
+//
 // llgo:link (*Image).DrawCircleLinesV C.ImageDrawCircleLinesV
 func (self *Image) DrawCircleLinesV(center Vector2, radius c.Int, color Color) {
 }
 
+// Draw rectangle within an image
+//
 // llgo:link (*Image).DrawRectangle C.ImageDrawRectangle
 func (self *Image) DrawRectangle(posX c.Int, posY c.Int, width c.Int, height c.Int, color Color) {
 }
 
+// Draw rectangle within an image (Vector version)
+//
 // llgo:link (*Image).DrawRectangleV C.ImageDrawRectangleV
 func (self *Image) DrawRectangleV(position Vector2, size Vector2, color Color) {
 }
 
+// Draw rectangle within an image
+//
 // llgo:link (*Image).DrawRectangleRec C.ImageDrawRectangleRec
 func (self *Image) DrawRectangleRec(rec Rectangle, color Color) {
 }
 
+// Draw rectangle lines within an image
+//
 // llgo:link (*Image).DrawRectangleLines C.ImageDrawRectangleLines
 func (self *Image) DrawRectangleLines(rec Rectangle, thick c.Int, color Color) {
 }
 
+// Draw triangle within an image
+//
 // llgo:link (*Image).DrawTriangle C.ImageDrawTriangle
 func (self *Image) DrawTriangle(v1 Vector2, v2 Vector2, v3 Vector2, color Color) {
 }
 
+// Draw triangle with interpolated colors within an image
+//
 // llgo:link (*Image).DrawTriangleEx C.ImageDrawTriangleEx
 func (self *Image) DrawTriangleEx(v1 Vector2, v2 Vector2, v3 Vector2, c1 Color, c2 Color, c3 Color) {
 }
 
+// Draw triangle outline within an image
+//
 // llgo:link (*Image).DrawTriangleLines C.ImageDrawTriangleLines
 func (self *Image) DrawTriangleLines(v1 Vector2, v2 Vector2, v3 Vector2, color Color) {
 }
 
+// Draw a triangle fan defined by points within an image (first vertex is the center)
+//
 // llgo:link (*Image).DrawTriangleFan C.ImageDrawTriangleFan
 func (self *Image) DrawTriangleFan(points *Vector2, pointCount c.Int, color Color) {
 }
 
+// Draw a triangle strip defined by points within an image
+//
 // llgo:link (*Image).DrawTriangleStrip C.ImageDrawTriangleStrip
 func (self *Image) DrawTriangleStrip(points *Vector2, pointCount c.Int, color Color) {
 }
 
+// Draw a source image within a destination image (tint applied to source)
+//
 // llgo:link (*Image).Draw C.ImageDraw
 func (self *Image) Draw(src Image, srcRec Rectangle, dstRec Rectangle, tint Color) {
 }
 
+// Draw text (using default font) within an image (destination)
+//
 // llgo:link (*Image).DrawText C.ImageDrawText
 func (self *Image) DrawText(text *c.Char, posX c.Int, posY c.Int, fontSize c.Int, color Color) {
 }
 
+// Draw text (custom sprite font) within an image (destination)
+//
 // llgo:link (*Image).DrawTextEx C.ImageDrawTextEx
 func (self *Image) DrawTextEx(font Font, text *c.Char, position Vector2, fontSize c.Float, spacing c.Float, tint Color) {
 }
@@ -2485,41 +2888,59 @@ func (self *Image) DrawTextEx(font Font, text *c.Char, position Vector2, fontSiz
 //go:linkname LoadTexture C.LoadTexture
 func LoadTexture(fileName *c.Char) Texture2D
 
+// Load texture from image data
+//
 // llgo:link Image.LoadTextureFrom C.LoadTextureFromImage
 func (self Image) LoadTextureFrom() Texture2D {
 	return Texture2D{}
 }
 
+// Load cubemap from image, multiple image cubemap layouts supported
+//
 // llgo:link Image.LoadTextureCubemap C.LoadTextureCubemap
 func (self Image) LoadTextureCubemap(layout c.Int) TextureCubemap {
 	return TextureCubemap{}
 }
 
+// Load texture for rendering (framebuffer)
+//
 //go:linkname LoadRenderTexture C.LoadRenderTexture
 func LoadRenderTexture(width c.Int, height c.Int) RenderTexture2D
 
+// Check if a texture is valid (loaded in GPU)
+//
 // llgo:link Texture2D.IsTextureValid C.IsTextureValid
 func (self Texture2D) IsTextureValid() bool {
 	return false
 }
 
+// Unload texture from GPU memory (VRAM)
+//
 // llgo:link Texture2D.UnloadTexture C.UnloadTexture
 func (self Texture2D) UnloadTexture() {
 }
 
+// Check if a render texture is valid (loaded in GPU)
+//
 // llgo:link RenderTexture2D.IsRenderTextureValid C.IsRenderTextureValid
 func (self RenderTexture2D) IsRenderTextureValid() bool {
 	return false
 }
 
+// Unload render texture from GPU memory (VRAM)
+//
 // llgo:link RenderTexture2D.UnloadRenderTexture C.UnloadRenderTexture
 func (self RenderTexture2D) UnloadRenderTexture() {
 }
 
+// Update GPU texture with new data (pixels should be able to fill texture)
+//
 // llgo:link Texture2D.UpdateTexture C.UpdateTexture
 func (self Texture2D) UpdateTexture(pixels unsafe.Pointer) {
 }
 
+// Update GPU texture rectangle with new data (pixels and rec should fit in texture)
+//
 // llgo:link Texture2D.UpdateTextureRec C.UpdateTextureRec
 func (self Texture2D) UpdateTextureRec(rec Rectangle, pixels unsafe.Pointer) {
 }
@@ -2530,10 +2951,14 @@ func (self Texture2D) UpdateTextureRec(rec Rectangle, pixels unsafe.Pointer) {
 func (self *Texture2D) GenTextureMipmaps() {
 }
 
+// Set texture scaling filter mode
+//
 // llgo:link Texture2D.SetTextureFilter C.SetTextureFilter
 func (self Texture2D) SetTextureFilter(filter c.Int) {
 }
 
+// Set texture wrapping mode
+//
 // llgo:link Texture2D.SetTextureWrap C.SetTextureWrap
 func (self Texture2D) SetTextureWrap(wrap c.Int) {
 }
@@ -2544,22 +2969,32 @@ func (self Texture2D) SetTextureWrap(wrap c.Int) {
 func (self Texture2D) DrawTexture(posX c.Int, posY c.Int, tint Color) {
 }
 
+// Draw a Texture2D with position defined as Vector2
+//
 // llgo:link Texture2D.DrawTextureV C.DrawTextureV
 func (self Texture2D) DrawTextureV(position Vector2, tint Color) {
 }
 
+// Draw a Texture2D with extended parameters
+//
 // llgo:link Texture2D.DrawTextureEx C.DrawTextureEx
 func (self Texture2D) DrawTextureEx(position Vector2, rotation c.Float, scale c.Float, tint Color) {
 }
 
+// Draw a part of a texture defined by a rectangle
+//
 // llgo:link Texture2D.DrawTextureRec C.DrawTextureRec
 func (self Texture2D) DrawTextureRec(source Rectangle, position Vector2, tint Color) {
 }
 
+// Draw a part of a texture defined by a rectangle with 'pro' parameters
+//
 // llgo:link Texture2D.DrawTexturePro C.DrawTexturePro
 func (self Texture2D) DrawTexturePro(source Rectangle, dest Rectangle, origin Vector2, rotation c.Float, tint Color) {
 }
 
+// Draws a texture (or part of it) that stretches or shrinks nicely
+//
 // llgo:link Texture2D.DrawTextureNPatch C.DrawTextureNPatch
 func (self Texture2D) DrawTextureNPatch(nPatchInfo NPatchInfo, dest Rectangle, origin Vector2, rotation c.Float, tint Color) {
 }
@@ -2569,71 +3004,103 @@ func (self Texture2D) DrawTextureNPatch(nPatchInfo NPatchInfo, dest Rectangle, o
 //go:linkname ColorIsEqual C.ColorIsEqual
 func ColorIsEqual(col1 Color, col2 Color) bool
 
+// Get color with alpha applied, alpha goes from 0.0f to 1.0f
+//
 // llgo:link Color.Fade C.Fade
 func (self Color) Fade(alpha c.Float) Color {
 	return self
 }
 
+// Get hexadecimal value for a Color (0xRRGGBBAA)
+//
 // llgo:link Color.ToInt C.ColorToInt
 func (self Color) ToInt() c.Int {
 	return 0
 }
 
+// Get Color normalized as float [0..1]
+//
 // llgo:link Color.Normalize C.ColorNormalize
 func (self Color) Normalize() Vector4 {
 	return Vector4{}
 }
 
+// Get Color from normalized values [0..1]
+//
 // llgo:link Vector4.ColorFromNormalized C.ColorFromNormalized
 func (self Vector4) ColorFromNormalized() Color {
 	return Color{}
 }
 
+// Get HSV values for a Color, hue [0..360], saturation/value [0..1]
+//
 // llgo:link Color.ToHSV C.ColorToHSV
 func (self Color) ToHSV() Vector3 {
 	return Vector3{}
 }
 
+// Get a Color from HSV values, hue [0..360], saturation/value [0..1]
+//
 //go:linkname ColorFromHSV C.ColorFromHSV
 func ColorFromHSV(hue c.Float, saturation c.Float, value c.Float) Color
 
+// Get color multiplied with another color
+//
 //go:linkname ColorTint C.ColorTint
 func ColorTint(color Color, tint Color) Color
 
+// Get color with brightness correction, brightness factor goes from -1.0f to 1.0f
+//
 // llgo:link Color.Brightness C.ColorBrightness
 func (self Color) Brightness(factor c.Float) Color {
 	return self
 }
 
+// Get color with contrast correction, contrast values between -1.0f and 1.0f
+//
 // llgo:link Color.Contrast C.ColorContrast
 func (self Color) Contrast(contrast c.Float) Color {
 	return self
 }
 
+// Get color with alpha applied, alpha goes from 0.0f to 1.0f
+//
 // llgo:link Color.Alpha C.ColorAlpha
 func (self Color) Alpha(alpha c.Float) Color {
 	return self
 }
 
+// Get src alpha-blended into dst color with tint
+//
 // llgo:link Color.AlphaBlend C.ColorAlphaBlend
 func (self Color) AlphaBlend(src Color, tint Color) Color {
 	return self
 }
 
+// Get color lerp interpolation between two colors, factor [0.0f..1.0f]
+//
 // llgo:link Color.Lerp C.ColorLerp
 func (self Color) Lerp(color2 Color, factor c.Float) Color {
 	return self
 }
 
+// Get Color structure from hexadecimal value
+//
 //go:linkname GetColor C.GetColor
 func GetColor(hexValue c.Uint) Color
 
+// Get Color from a source pixel pointer of certain format
+//
 //go:linkname GetPixelColor C.GetPixelColor
 func GetPixelColor(srcPtr unsafe.Pointer, format c.Int) Color
 
+// Set color formatted into destination pixel pointer
+//
 //go:linkname SetPixelColor C.SetPixelColor
 func SetPixelColor(dstPtr unsafe.Pointer, color Color, format c.Int)
 
+// Get pixel data size in bytes for certain format
+//
 //go:linkname GetPixelDataSize C.GetPixelDataSize
 func GetPixelDataSize(width c.Int, height c.Int, format c.Int) c.Int
 
@@ -2642,41 +3109,61 @@ func GetPixelDataSize(width c.Int, height c.Int, format c.Int) c.Int
 //go:linkname GetFontDefault C.GetFontDefault
 func GetFontDefault() Font
 
+// Load font from file into GPU memory (VRAM)
+//
 //go:linkname LoadFont C.LoadFont
 func LoadFont(fileName *c.Char) Font
 
+// Load font from file with extended parameters, use NULL for codepoints and 0 for codepointCount to load the default character set, font size is provided in pixels height
+//
 //go:linkname LoadFontEx C.LoadFontEx
 func LoadFontEx(fileName *c.Char, fontSize c.Int, codepoints *c.Int, codepointCount c.Int) Font
 
+// Load font from Image (XNA style)
+//
 // llgo:link Image.LoadFontFrom C.LoadFontFromImage
 func (self Image) LoadFontFrom(key Color, firstChar c.Int) Font {
 	return Font{}
 }
 
+// Load font from memory buffer, fileType refers to extension: i.e. '.ttf'
+//
 //go:linkname LoadFontFromMemory C.LoadFontFromMemory
 func LoadFontFromMemory(fileType *c.Char, fileData *uint8, dataSize c.Int, fontSize c.Int, codepoints *c.Int, codepointCount c.Int) Font
 
+// Check if a font is valid (font data loaded, WARNING: GPU texture not checked)
+//
 // llgo:link Font.IsFontValid C.IsFontValid
 func (self Font) IsFontValid() bool {
 	return false
 }
 
+// Load font data for further use
+//
 //go:linkname LoadFontData C.LoadFontData
 func LoadFontData(fileData *uint8, dataSize c.Int, fontSize c.Int, codepoints *c.Int, codepointCount c.Int, type_ c.Int, glyphCount *c.Int) *GlyphInfo
 
+// Generate image font atlas using chars info
+//
 // llgo:link (*GlyphInfo).GenImageFontAtlas C.GenImageFontAtlas
 func (self *GlyphInfo) GenImageFontAtlas(glyphRecs **Rectangle, glyphCount c.Int, fontSize c.Int, padding c.Int, packMethod c.Int) Image {
 	return Image{}
 }
 
+// Unload font chars info data (RAM)
+//
 // llgo:link (*GlyphInfo).UnloadFontData C.UnloadFontData
 func (self *GlyphInfo) UnloadFontData(glyphCount c.Int) {
 }
 
+// Unload font from GPU memory (VRAM)
+//
 // llgo:link Font.Unload C.UnloadFont
 func (self Font) Unload() {
 }
 
+// Export font as code file, returns true on success
+//
 // llgo:link Font.ExportFontAsCode C.ExportFontAsCode
 func (self Font) ExportFontAsCode(fileName *c.Char) bool {
 	return false
@@ -2687,21 +3174,31 @@ func (self Font) ExportFontAsCode(fileName *c.Char) bool {
 //go:linkname DrawFPS C.DrawFPS
 func DrawFPS(posX c.Int, posY c.Int)
 
+// Draw text (using default font)
+//
 //go:linkname DrawText C.DrawText
 func DrawText(text *c.Char, posX c.Int, posY c.Int, fontSize c.Int, color Color)
 
+// Draw text using font and additional parameters
+//
 // llgo:link Font.DrawTextEx C.DrawTextEx
 func (self Font) DrawTextEx(text *c.Char, position Vector2, fontSize c.Float, spacing c.Float, tint Color) {
 }
 
+// Draw text using Font and pro parameters (rotation)
+//
 // llgo:link Font.DrawTextPro C.DrawTextPro
 func (self Font) DrawTextPro(text *c.Char, position Vector2, origin Vector2, rotation c.Float, fontSize c.Float, spacing c.Float, tint Color) {
 }
 
+// Draw one character (codepoint)
+//
 // llgo:link Font.DrawTextCodepoint C.DrawTextCodepoint
 func (self Font) DrawTextCodepoint(codepoint c.Int, position Vector2, fontSize c.Float, tint Color) {
 }
 
+// Draw multiple character (codepoint)
+//
 // llgo:link Font.DrawTextCodepoints C.DrawTextCodepoints
 func (self Font) DrawTextCodepoints(codepoints *c.Int, codepointCount c.Int, position Vector2, fontSize c.Float, spacing c.Float, tint Color) {
 }
@@ -2711,29 +3208,41 @@ func (self Font) DrawTextCodepoints(codepoints *c.Int, codepointCount c.Int, pos
 //go:linkname SetTextLineSpacing C.SetTextLineSpacing
 func SetTextLineSpacing(spacing c.Int)
 
+// Measure string width for default font
+//
 //go:linkname MeasureText C.MeasureText
 func MeasureText(text *c.Char, fontSize c.Int) c.Int
 
+// Measure string size for Font
+//
 // llgo:link Font.MeasureTextEx C.MeasureTextEx
 func (self Font) MeasureTextEx(text *c.Char, fontSize c.Float, spacing c.Float) Vector2 {
 	return Vector2{}
 }
 
+// Measure string size for an existing array of codepoints for Font
+//
 // llgo:link Font.MeasureTextCodepoints C.MeasureTextCodepoints
 func (self Font) MeasureTextCodepoints(codepoints *c.Int, length c.Int, fontSize c.Float, spacing c.Float) Vector2 {
 	return Vector2{}
 }
 
+// Get glyph index position in font for a codepoint (unicode character), fallback to '?' if not found
+//
 // llgo:link Font.GlyphIndex C.GetGlyphIndex
 func (self Font) GlyphIndex(codepoint c.Int) c.Int {
 	return 0
 }
 
+// Get glyph font info data for a codepoint (unicode character), fallback to '?' if not found
+//
 // llgo:link Font.GlyphInfo C.GetGlyphInfo
 func (self Font) GlyphInfo(codepoint c.Int) GlyphInfo {
 	return GlyphInfo{}
 }
 
+// Get glyph rectangle in font atlas for a codepoint (unicode character), fallback to '?' if not found
+//
 // llgo:link Font.GlyphAtlasRec C.GetGlyphAtlasRec
 func (self Font) GlyphAtlasRec(codepoint c.Int) Rectangle {
 	return Rectangle{}
@@ -2744,27 +3253,43 @@ func (self Font) GlyphAtlasRec(codepoint c.Int) Rectangle {
 //go:linkname LoadUTF8 C.LoadUTF8
 func LoadUTF8(codepoints *c.Int, length c.Int) *c.Char
 
+// Unload UTF-8 text encoded from codepoints array
+//
 //go:linkname UnloadUTF8 C.UnloadUTF8
 func UnloadUTF8(text *c.Char)
 
+// Load all codepoints from a UTF-8 text string, codepoints count returned by parameter
+//
 //go:linkname LoadCodepoints C.LoadCodepoints
 func LoadCodepoints(text *c.Char, count *c.Int) *c.Int
 
+// Unload codepoints data from memory
+//
 //go:linkname UnloadCodepoints C.UnloadCodepoints
 func UnloadCodepoints(codepoints *c.Int)
 
+// Get total number of codepoints in a UTF-8 encoded string
+//
 //go:linkname GetCodepointCount C.GetCodepointCount
 func GetCodepointCount(text *c.Char) c.Int
 
+// Get next codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
+//
 //go:linkname GetCodepoint C.GetCodepoint
 func GetCodepoint(text *c.Char, codepointSize *c.Int) c.Int
 
+// Get next codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
+//
 //go:linkname GetCodepointNext C.GetCodepointNext
 func GetCodepointNext(text *c.Char, codepointSize *c.Int) c.Int
 
+// Get previous codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
+//
 //go:linkname GetCodepointPrevious C.GetCodepointPrevious
 func GetCodepointPrevious(text *c.Char, codepointSize *c.Int) c.Int
 
+// Encode one codepoint into UTF-8 byte array (array length returned as parameter)
+//
 //go:linkname CodepointToUTF8 C.CodepointToUTF8
 func CodepointToUTF8(codepoint c.Int, utf8Size *c.Int) *c.Char
 
@@ -2775,78 +3300,128 @@ func CodepointToUTF8(codepoint c.Int, utf8Size *c.Int) *c.Char
 //go:linkname LoadTextLines C.LoadTextLines
 func LoadTextLines(text *c.Char, count *c.Int) **c.Char
 
+// Unload text lines
+//
 //go:linkname UnloadTextLines C.UnloadTextLines
 func UnloadTextLines(text **c.Char, lineCount c.Int)
 
+// Copy one string to another, returns bytes copied
+//
 //go:linkname TextCopy C.TextCopy
 func TextCopy(dst *c.Char, src *c.Char) c.Int
 
+// Check if two text string are equal
+//
 //go:linkname TextIsEqual C.TextIsEqual
 func TextIsEqual(text1 *c.Char, text2 *c.Char) bool
 
+// Get text length, checks for '\0' ending
+//
 //go:linkname TextLength C.TextLength
 func TextLength(text *c.Char) c.Uint
 
+// Text formatting with variables (sprintf() style)
+//
 //go:linkname TextFormat C.TextFormat
 func TextFormat(text *c.Char, __llgo_va_list ...any) *c.Char
 
+// Get a piece of a text string
+//
 //go:linkname TextSubtext C.TextSubtext
 func TextSubtext(text *c.Char, position c.Int, length c.Int) *c.Char
 
+// Remove text spaces, concat words
+//
 //go:linkname TextRemoveSpaces C.TextRemoveSpaces
 func TextRemoveSpaces(text *c.Char) *c.Char
 
+// Get text between two strings
+//
 //go:linkname GetTextBetween C.GetTextBetween
 func GetTextBetween(text *c.Char, begin *c.Char, end *c.Char) *c.Char
 
+// Replace text string with new string
+//
 //go:linkname TextReplace C.TextReplace
 func TextReplace(text *c.Char, search *c.Char, replacement *c.Char) *c.Char
 
+// Replace text string with new string, memory must be MemFree()
+//
 //go:linkname TextReplaceAlloc C.TextReplaceAlloc
 func TextReplaceAlloc(text *c.Char, search *c.Char, replacement *c.Char) *c.Char
 
+// Replace text between two specific strings
+//
 //go:linkname TextReplaceBetween C.TextReplaceBetween
 func TextReplaceBetween(text *c.Char, begin *c.Char, end *c.Char, replacement *c.Char) *c.Char
 
+// Replace text between two specific strings, memory must be MemFree()
+//
 //go:linkname TextReplaceBetweenAlloc C.TextReplaceBetweenAlloc
 func TextReplaceBetweenAlloc(text *c.Char, begin *c.Char, end *c.Char, replacement *c.Char) *c.Char
 
+// Insert text in a defined byte position
+//
 //go:linkname TextInsert C.TextInsert
 func TextInsert(text *c.Char, insert *c.Char, position c.Int) *c.Char
 
+// Insert text in a defined byte position, memory must be MemFree()
+//
 //go:linkname TextInsertAlloc C.TextInsertAlloc
 func TextInsertAlloc(text *c.Char, insert *c.Char, position c.Int) *c.Char
 
+// Join text strings with delimiter
+//
 //go:linkname TextJoin C.TextJoin
 func TextJoin(textList **c.Char, count c.Int, delimiter *c.Char) *c.Char
 
+// Split text into multiple strings, using MAX_TEXTSPLIT_COUNT static strings
+//
 //go:linkname TextSplit C.TextSplit
 func TextSplit(text *c.Char, delimiter c.Char, count *c.Int) **c.Char
 
+// Append text at specific position and move cursor
+//
 //go:linkname TextAppend C.TextAppend
 func TextAppend(text *c.Char, append *c.Char, position *c.Int)
 
+// Find first text occurrence within a string, -1 if not found
+//
 //go:linkname TextFindIndex C.TextFindIndex
 func TextFindIndex(text *c.Char, search *c.Char) c.Int
 
+// Get upper case version of provided string
+//
 //go:linkname TextToUpper C.TextToUpper
 func TextToUpper(text *c.Char) *c.Char
 
+// Get lower case version of provided string
+//
 //go:linkname TextToLower C.TextToLower
 func TextToLower(text *c.Char) *c.Char
 
+// Get Pascal case notation version of provided string
+//
 //go:linkname TextToPascal C.TextToPascal
 func TextToPascal(text *c.Char) *c.Char
 
+// Get Snake case notation version of provided string
+//
 //go:linkname TextToSnake C.TextToSnake
 func TextToSnake(text *c.Char) *c.Char
 
+// Get Camel case notation version of provided string
+//
 //go:linkname TextToCamel C.TextToCamel
 func TextToCamel(text *c.Char) *c.Char
 
+// Get integer value from text
+//
 //go:linkname TextToInteger C.TextToInteger
 func TextToInteger(text *c.Char) c.Int
 
+// Get float value from text
+//
 //go:linkname TextToFloat C.TextToFloat
 func TextToFloat(text *c.Char) c.Float
 
@@ -2856,82 +3431,122 @@ func TextToFloat(text *c.Char) c.Float
 func (self Vector3) DrawLine3D(endPos Vector3, color Color) {
 }
 
+// Draw a point in 3D space, actually a small line
+//
 // llgo:link Vector3.DrawPoint3D C.DrawPoint3D
 func (self Vector3) DrawPoint3D(color Color) {
 }
 
+// Draw a circle in 3D world space
+//
 // llgo:link Vector3.DrawCircle3D C.DrawCircle3D
 func (self Vector3) DrawCircle3D(radius c.Float, rotationAxis Vector3, rotationAngle c.Float, color Color) {
 }
 
+// Draw a color-filled triangle (vertex in counter-clockwise order!)
+//
 // llgo:link Vector3.DrawTriangle3D C.DrawTriangle3D
 func (self Vector3) DrawTriangle3D(v2 Vector3, v3 Vector3, color Color) {
 }
 
+// Draw a triangle strip defined by points
+//
 // llgo:link (*Vector3).DrawTriangleStrip3D C.DrawTriangleStrip3D
 func (self *Vector3) DrawTriangleStrip3D(pointCount c.Int, color Color) {
 }
 
+// Draw cube
+//
 // llgo:link Vector3.DrawCube C.DrawCube
 func (self Vector3) DrawCube(width c.Float, height c.Float, length c.Float, color Color) {
 }
 
+// Draw cube (Vector version)
+//
 // llgo:link Vector3.DrawCubeV C.DrawCubeV
 func (self Vector3) DrawCubeV(size Vector3, color Color) {
 }
 
+// Draw cube wires
+//
 // llgo:link Vector3.DrawCubeWires C.DrawCubeWires
 func (self Vector3) DrawCubeWires(width c.Float, height c.Float, length c.Float, color Color) {
 }
 
+// Draw cube wires (Vector version)
+//
 // llgo:link Vector3.DrawCubeWiresV C.DrawCubeWiresV
 func (self Vector3) DrawCubeWiresV(size Vector3, color Color) {
 }
 
+// Draw sphere
+//
 // llgo:link Vector3.DrawSphere C.DrawSphere
 func (self Vector3) DrawSphere(radius c.Float, color Color) {
 }
 
+// Draw sphere with extended parameters
+//
 // llgo:link Vector3.DrawSphereEx C.DrawSphereEx
 func (self Vector3) DrawSphereEx(radius c.Float, rings c.Int, slices c.Int, color Color) {
 }
 
+// Draw sphere wires
+//
 // llgo:link Vector3.DrawSphereWires C.DrawSphereWires
 func (self Vector3) DrawSphereWires(radius c.Float, rings c.Int, slices c.Int, color Color) {
 }
 
+// Draw a cylinder/cone
+//
 // llgo:link Vector3.DrawCylinder C.DrawCylinder
 func (self Vector3) DrawCylinder(radiusTop c.Float, radiusBottom c.Float, height c.Float, slices c.Int, color Color) {
 }
 
+// Draw a cylinder with base at startPos and top at endPos
+//
 // llgo:link Vector3.DrawCylinderEx C.DrawCylinderEx
 func (self Vector3) DrawCylinderEx(endPos Vector3, startRadius c.Float, endRadius c.Float, sides c.Int, color Color) {
 }
 
+// Draw a cylinder/cone wires
+//
 // llgo:link Vector3.DrawCylinderWires C.DrawCylinderWires
 func (self Vector3) DrawCylinderWires(radiusTop c.Float, radiusBottom c.Float, height c.Float, slices c.Int, color Color) {
 }
 
+// Draw a cylinder wires with base at startPos and top at endPos
+//
 // llgo:link Vector3.DrawCylinderWiresEx C.DrawCylinderWiresEx
 func (self Vector3) DrawCylinderWiresEx(endPos Vector3, startRadius c.Float, endRadius c.Float, sides c.Int, color Color) {
 }
 
+// Draw a capsule with the center of its sphere caps at startPos and endPos
+//
 // llgo:link Vector3.DrawCapsule C.DrawCapsule
 func (self Vector3) DrawCapsule(endPos Vector3, radius c.Float, slices c.Int, rings c.Int, color Color) {
 }
 
+// Draw capsule wireframe with the center of its sphere caps at startPos and endPos
+//
 // llgo:link Vector3.DrawCapsuleWires C.DrawCapsuleWires
 func (self Vector3) DrawCapsuleWires(endPos Vector3, radius c.Float, slices c.Int, rings c.Int, color Color) {
 }
 
+// Draw a plane XZ
+//
 // llgo:link Vector3.DrawPlane C.DrawPlane
 func (self Vector3) DrawPlane(size Vector2, color Color) {
 }
 
+// Draw a ray line
+//
 // llgo:link Ray.Draw C.DrawRay
 func (self Ray) Draw(color Color) {
 }
 
+// Draw a grid (centered at (0, 0, 0))
+//
 //go:linkname DrawGrid C.DrawGrid
 func DrawGrid(slices c.Int, spacing c.Float)
 
@@ -2940,20 +3555,28 @@ func DrawGrid(slices c.Int, spacing c.Float)
 //go:linkname LoadModel C.LoadModel
 func LoadModel(fileName *c.Char) Model
 
+// Load model from generated mesh (default material)
+//
 // llgo:link Mesh.LoadModelFrom C.LoadModelFromMesh
 func (self Mesh) LoadModelFrom() Model {
 	return Model{}
 }
 
+// Check if a model is valid (loaded in GPU, VAO/VBOs)
+//
 // llgo:link Model.IsModelValid C.IsModelValid
 func (self Model) IsModelValid() bool {
 	return false
 }
 
+// Unload model (including meshes) from memory (RAM and/or VRAM)
+//
 // llgo:link Model.Unload C.UnloadModel
 func (self Model) Unload() {
 }
 
+// Compute model bounding box limits (considers all meshes)
+//
 // llgo:link Model.BoundingBox C.GetModelBoundingBox
 func (self Model) BoundingBox() BoundingBox {
 	return BoundingBox{}
@@ -2965,30 +3588,44 @@ func (self Model) BoundingBox() BoundingBox {
 func (self Model) Draw(position Vector3, scale c.Float, tint Color) {
 }
 
+// Draw a model with extended parameters
+//
 // llgo:link Model.DrawModelEx C.DrawModelEx
 func (self Model) DrawModelEx(position Vector3, rotationAxis Vector3, rotationAngle c.Float, scale Vector3, tint Color) {
 }
 
+// Draw a model wires (with texture if set)
+//
 // llgo:link Model.DrawModelWires C.DrawModelWires
 func (self Model) DrawModelWires(position Vector3, scale c.Float, tint Color) {
 }
 
+// Draw a model wires (with texture if set) with extended parameters
+//
 // llgo:link Model.DrawModelWiresEx C.DrawModelWiresEx
 func (self Model) DrawModelWiresEx(position Vector3, rotationAxis Vector3, rotationAngle c.Float, scale Vector3, tint Color) {
 }
 
+// Draw bounding box (wires)
+//
 // llgo:link BoundingBox.Draw C.DrawBoundingBox
 func (self BoundingBox) Draw(color Color) {
 }
 
+// Draw a billboard texture
+//
 // llgo:link Camera.DrawBillboard C.DrawBillboard
 func (self Camera) DrawBillboard(texture Texture2D, position Vector3, scale c.Float, tint Color) {
 }
 
+// Draw a billboard texture defined by source
+//
 // llgo:link Camera.DrawBillboardRec C.DrawBillboardRec
 func (self Camera) DrawBillboardRec(texture Texture2D, source Rectangle, position Vector3, size Vector2, tint Color) {
 }
 
+// Draw a billboard texture defined by source and rotation
+//
 // llgo:link Camera.DrawBillboardPro C.DrawBillboardPro
 func (self Camera) DrawBillboardPro(texture Texture2D, source Rectangle, position Vector3, up Vector3, size Vector2, origin Vector2, rotation c.Float, tint Color) {
 }
@@ -2999,36 +3636,52 @@ func (self Camera) DrawBillboardPro(texture Texture2D, source Rectangle, positio
 func (self *Mesh) Upload(dynamic bool) {
 }
 
+// Update mesh vertex data in GPU for a specific buffer index
+//
 // llgo:link Mesh.UpdateMeshBuffer C.UpdateMeshBuffer
 func (self Mesh) UpdateMeshBuffer(index c.Int, data unsafe.Pointer, dataSize c.Int, offset c.Int) {
 }
 
+// Unload mesh data from CPU and GPU
+//
 // llgo:link Mesh.Unload C.UnloadMesh
 func (self Mesh) Unload() {
 }
 
+// Draw a 3d mesh with material and transform
+//
 // llgo:link Mesh.Draw C.DrawMesh
 func (self Mesh) Draw(material Material, transform Matrix) {
 }
 
+// Draw multiple mesh instances with material and different transforms
+//
 // llgo:link Mesh.DrawMeshInstanced C.DrawMeshInstanced
 func (self Mesh) DrawMeshInstanced(material Material, transforms *Matrix, instances c.Int) {
 }
 
+// Compute mesh bounding box limits
+//
 // llgo:link Mesh.BoundingBox C.GetMeshBoundingBox
 func (self Mesh) BoundingBox() BoundingBox {
 	return BoundingBox{}
 }
 
+// Compute mesh tangents
+//
 // llgo:link (*Mesh).GenMeshTangents C.GenMeshTangents
 func (self *Mesh) GenMeshTangents() {
 }
 
+// Export mesh data to file, returns true on success
+//
 // llgo:link Mesh.Export C.ExportMesh
 func (self Mesh) Export(fileName *c.Char) bool {
 	return false
 }
 
+// Export mesh as code file (.h) defining multiple arrays of vertex attributes
+//
 // llgo:link Mesh.ExportMeshAsCode C.ExportMeshAsCode
 func (self Mesh) ExportMeshAsCode(fileName *c.Char) bool {
 	return false
@@ -3039,35 +3692,55 @@ func (self Mesh) ExportMeshAsCode(fileName *c.Char) bool {
 //go:linkname GenMeshPoly C.GenMeshPoly
 func GenMeshPoly(sides c.Int, radius c.Float) Mesh
 
+// Generate plane mesh (with subdivisions)
+//
 //go:linkname GenMeshPlane C.GenMeshPlane
 func GenMeshPlane(width c.Float, length c.Float, resX c.Int, resZ c.Int) Mesh
 
+// Generate cuboid mesh
+//
 //go:linkname GenMeshCube C.GenMeshCube
 func GenMeshCube(width c.Float, height c.Float, length c.Float) Mesh
 
+// Generate sphere mesh (standard sphere)
+//
 //go:linkname GenMeshSphere C.GenMeshSphere
 func GenMeshSphere(radius c.Float, rings c.Int, slices c.Int) Mesh
 
+// Generate half-sphere mesh (no bottom cap)
+//
 //go:linkname GenMeshHemiSphere C.GenMeshHemiSphere
 func GenMeshHemiSphere(radius c.Float, rings c.Int, slices c.Int) Mesh
 
+// Generate cylinder mesh
+//
 //go:linkname GenMeshCylinder C.GenMeshCylinder
 func GenMeshCylinder(radius c.Float, height c.Float, slices c.Int) Mesh
 
+// Generate cone/pyramid mesh
+//
 //go:linkname GenMeshCone C.GenMeshCone
 func GenMeshCone(radius c.Float, height c.Float, slices c.Int) Mesh
 
+// Generate torus mesh
+//
 //go:linkname GenMeshTorus C.GenMeshTorus
 func GenMeshTorus(radius c.Float, size c.Float, radSeg c.Int, sides c.Int) Mesh
 
+// Generate trefoil knot mesh
+//
 //go:linkname GenMeshKnot C.GenMeshKnot
 func GenMeshKnot(radius c.Float, size c.Float, radSeg c.Int, sides c.Int) Mesh
 
+// Generate heightmap mesh from image data
+//
 // llgo:link Image.GenMeshHeightmap C.GenMeshHeightmap
 func (self Image) GenMeshHeightmap(size Vector3) Mesh {
 	return Mesh{}
 }
 
+// Generate cubes-based map mesh from image data
+//
 // llgo:link Image.GenMeshCubicmap C.GenMeshCubicmap
 func (self Image) GenMeshCubicmap(cubeSize Vector3) Mesh {
 	return Mesh{}
@@ -3078,22 +3751,32 @@ func (self Image) GenMeshCubicmap(cubeSize Vector3) Mesh {
 //go:linkname LoadMaterials C.LoadMaterials
 func LoadMaterials(fileName *c.Char, materialCount *c.Int) *Material
 
+// Load default material (Supports: DIFFUSE, SPECULAR, NORMAL maps)
+//
 //go:linkname LoadMaterialDefault C.LoadMaterialDefault
 func LoadMaterialDefault() Material
 
+// Check if a material is valid (shader assigned, map textures loaded in GPU)
+//
 // llgo:link Material.IsMaterialValid C.IsMaterialValid
 func (self Material) IsMaterialValid() bool {
 	return false
 }
 
+// Unload material from GPU memory (VRAM)
+//
 // llgo:link Material.Unload C.UnloadMaterial
 func (self Material) Unload() {
 }
 
+// Set texture for a material map type (MATERIAL_MAP_DIFFUSE, MATERIAL_MAP_SPECULAR...)
+//
 // llgo:link (*Material).SetMaterialTexture C.SetMaterialTexture
 func (self *Material) SetMaterialTexture(mapType c.Int, texture Texture2D) {
 }
 
+// Set material for a mesh
+//
 // llgo:link (*Model).SetModelMeshMaterial C.SetModelMeshMaterial
 func (self *Model) SetModelMeshMaterial(meshId c.Int, materialId c.Int) {
 }
@@ -3103,18 +3786,26 @@ func (self *Model) SetModelMeshMaterial(meshId c.Int, materialId c.Int) {
 //go:linkname LoadModelAnimations C.LoadModelAnimations
 func LoadModelAnimations(fileName *c.Char, animCount *c.Int) *ModelAnimation
 
+// Update model animation pose (vertex buffers and bone matrices)
+//
 // llgo:link Model.UpdateModelAnimation C.UpdateModelAnimation
 func (self Model) UpdateModelAnimation(anim ModelAnimation, frame c.Float) {
 }
 
+// Update model animation pose, blending two animations
+//
 // llgo:link Model.UpdateModelAnimationEx C.UpdateModelAnimationEx
 func (self Model) UpdateModelAnimationEx(animA ModelAnimation, frameA c.Float, animB ModelAnimation, frameB c.Float, blend c.Float) {
 }
 
+// Unload animation array data
+//
 // llgo:link (*ModelAnimation).UnloadModelAnimations C.UnloadModelAnimations
 func (self *ModelAnimation) UnloadModelAnimations(animCount c.Int) {
 }
 
+// Check model animation skeleton match
+//
 // llgo:link Model.IsModelAnimationValid C.IsModelAnimationValid
 func (self Model) IsModelAnimationValid(anim ModelAnimation) bool {
 	return false
@@ -3127,34 +3818,48 @@ func (self Vector3) CheckCollisionSpheres(radius1 c.Float, center2 Vector3, radi
 	return false
 }
 
+// Check collision between two bounding boxes
+//
 //go:linkname CheckCollisionBoxes C.CheckCollisionBoxes
 func CheckCollisionBoxes(box1 BoundingBox, box2 BoundingBox) bool
 
+// Check collision between box and sphere
+//
 // llgo:link BoundingBox.CheckCollisionBoxSphere C.CheckCollisionBoxSphere
 func (self BoundingBox) CheckCollisionBoxSphere(center Vector3, radius c.Float) bool {
 	return false
 }
 
+// Get collision info between ray and sphere
+//
 // llgo:link Ray.CollisionSphere C.GetRayCollisionSphere
 func (self Ray) CollisionSphere(center Vector3, radius c.Float) RayCollision {
 	return RayCollision{}
 }
 
+// Get collision info between ray and box
+//
 // llgo:link Ray.CollisionBox C.GetRayCollisionBox
 func (self Ray) CollisionBox(box BoundingBox) RayCollision {
 	return RayCollision{}
 }
 
+// Get collision info between ray and mesh
+//
 // llgo:link Ray.CollisionMesh C.GetRayCollisionMesh
 func (self Ray) CollisionMesh(mesh Mesh, transform Matrix) RayCollision {
 	return RayCollision{}
 }
 
+// Get collision info between ray and triangle
+//
 // llgo:link Ray.CollisionTriangle C.GetRayCollisionTriangle
 func (self Ray) CollisionTriangle(p1 Vector3, p2 Vector3, p3 Vector3) RayCollision {
 	return RayCollision{}
 }
 
+// Get collision info between ray and quad
+//
 // llgo:link Ray.CollisionQuad C.GetRayCollisionQuad
 func (self Ray) CollisionQuad(p1 Vector3, p2 Vector3, p3 Vector3, p4 Vector3) RayCollision {
 	return RayCollision{}
@@ -3165,15 +3870,23 @@ func (self Ray) CollisionQuad(p1 Vector3, p2 Vector3, p3 Vector3, p4 Vector3) Ra
 //go:linkname InitAudioDevice C.InitAudioDevice
 func InitAudioDevice()
 
+// Close the audio device and context
+//
 //go:linkname CloseAudioDevice C.CloseAudioDevice
 func CloseAudioDevice()
 
+// Check if audio device has been initialized successfully
+//
 //go:linkname IsAudioDeviceReady C.IsAudioDeviceReady
 func IsAudioDeviceReady() bool
 
+// Set master volume (listener)
+//
 //go:linkname SetMasterVolume C.SetMasterVolume
 func SetMasterVolume(volume c.Float)
 
+// Get master volume (listener)
+//
 //go:linkname GetMasterVolume C.GetMasterVolume
 func GetMasterVolume() c.Float
 
@@ -3182,53 +3895,77 @@ func GetMasterVolume() c.Float
 //go:linkname LoadWave C.LoadWave
 func LoadWave(fileName *c.Char) Wave
 
+// Load wave from memory buffer, fileType refers to extension: i.e. '.wav'
+//
 //go:linkname LoadWaveFromMemory C.LoadWaveFromMemory
 func LoadWaveFromMemory(fileType *c.Char, fileData *uint8, dataSize c.Int) Wave
 
+// Checks if wave data is valid (data loaded and parameters)
+//
 // llgo:link Wave.IsWaveValid C.IsWaveValid
 func (self Wave) IsWaveValid() bool {
 	return false
 }
 
+// Load sound from file
+//
 //go:linkname LoadSound C.LoadSound
 func LoadSound(fileName *c.Char) Sound
 
+// Load sound from wave data
+//
 // llgo:link Wave.LoadSoundFrom C.LoadSoundFromWave
 func (self Wave) LoadSoundFrom() Sound {
 	return Sound{}
 }
 
+// Create a new sound that shares the same sample data as the source sound, does not own the sound data
+//
 // llgo:link Sound.LoadSoundAlias C.LoadSoundAlias
 func (self Sound) LoadSoundAlias() Sound {
 	return self
 }
 
+// Checks if a sound is valid (data loaded and buffers initialized)
+//
 // llgo:link Sound.IsSoundValid C.IsSoundValid
 func (self Sound) IsSoundValid() bool {
 	return false
 }
 
+// Update sound buffer with new data (default data format: 32 bit float, stereo)
+//
 // llgo:link Sound.Update C.UpdateSound
 func (self Sound) Update(data unsafe.Pointer, sampleCount c.Int) {
 }
 
+// Unload wave data
+//
 // llgo:link Wave.Unload C.UnloadWave
 func (self Wave) Unload() {
 }
 
+// Unload sound
+//
 // llgo:link Sound.Unload C.UnloadSound
 func (self Sound) Unload() {
 }
 
+// Unload a sound alias (does not deallocate sample data)
+//
 // llgo:link Sound.UnloadSoundAlias C.UnloadSoundAlias
 func (self Sound) UnloadSoundAlias() {
 }
 
+// Export wave data to file, returns true on success
+//
 // llgo:link Wave.Export C.ExportWave
 func (self Wave) Export(fileName *c.Char) bool {
 	return false
 }
 
+// Export wave sample data to code (.h), returns true on success
+//
 // llgo:link Wave.ExportWaveAsCode C.ExportWaveAsCode
 func (self Wave) ExportWaveAsCode(fileName *c.Char) bool {
 	return false
@@ -3240,53 +3977,77 @@ func (self Wave) ExportWaveAsCode(fileName *c.Char) bool {
 func (self Sound) Play() {
 }
 
+// Stop playing a sound
+//
 // llgo:link Sound.Stop C.StopSound
 func (self Sound) Stop() {
 }
 
+// Pause a sound
+//
 // llgo:link Sound.Pause C.PauseSound
 func (self Sound) Pause() {
 }
 
+// Resume a paused sound
+//
 // llgo:link Sound.Resume C.ResumeSound
 func (self Sound) Resume() {
 }
 
+// Check if a sound is currently playing
+//
 // llgo:link Sound.IsSoundPlaying C.IsSoundPlaying
 func (self Sound) IsSoundPlaying() bool {
 	return false
 }
 
+// Set volume for a sound (1.0 is max level)
+//
 // llgo:link Sound.SetSoundVolume C.SetSoundVolume
 func (self Sound) SetSoundVolume(volume c.Float) {
 }
 
+// Set pitch for a sound (1.0 is base level)
+//
 // llgo:link Sound.SetSoundPitch C.SetSoundPitch
 func (self Sound) SetSoundPitch(pitch c.Float) {
 }
 
+// Set pan for a sound (-1.0 left, 0.0 center, 1.0 right)
+//
 // llgo:link Sound.SetSoundPan C.SetSoundPan
 func (self Sound) SetSoundPan(pan c.Float) {
 }
 
+// Copy a wave to a new wave
+//
 // llgo:link Wave.Copy C.WaveCopy
 func (self Wave) Copy() Wave {
 	return self
 }
 
+// Crop a wave to defined frames range
+//
 // llgo:link (*Wave).Crop C.WaveCrop
 func (self *Wave) Crop(initFrame c.Int, finalFrame c.Int) {
 }
 
+// Convert wave data to desired format
+//
 // llgo:link (*Wave).Format C.WaveFormat
 func (self *Wave) Format(sampleRate c.Int, sampleSize c.Int, channels c.Int) {
 }
 
+// Load samples data from wave as a 32bit float data array
+//
 // llgo:link Wave.LoadWaveSamples C.LoadWaveSamples
 func (self Wave) LoadWaveSamples() *c.Float {
 	return nil
 }
 
+// Unload samples data loaded with LoadWaveSamples()
+//
 //go:linkname UnloadWaveSamples C.UnloadWaveSamples
 func UnloadWaveSamples(samples *c.Float)
 
@@ -3295,64 +4056,94 @@ func UnloadWaveSamples(samples *c.Float)
 //go:linkname LoadMusicStream C.LoadMusicStream
 func LoadMusicStream(fileName *c.Char) Music
 
+// Load music stream from data
+//
 //go:linkname LoadMusicStreamFromMemory C.LoadMusicStreamFromMemory
 func LoadMusicStreamFromMemory(fileType *c.Char, data *uint8, dataSize c.Int) Music
 
+// Checks if a music stream is valid (context and buffers initialized)
+//
 // llgo:link Music.IsMusicValid C.IsMusicValid
 func (self Music) IsMusicValid() bool {
 	return false
 }
 
+// Unload music stream
+//
 // llgo:link Music.UnloadMusicStream C.UnloadMusicStream
 func (self Music) UnloadMusicStream() {
 }
 
+// Start music playing
+//
 // llgo:link Music.PlayMusicStream C.PlayMusicStream
 func (self Music) PlayMusicStream() {
 }
 
+// Check if music is playing
+//
 // llgo:link Music.IsMusicStreamPlaying C.IsMusicStreamPlaying
 func (self Music) IsMusicStreamPlaying() bool {
 	return false
 }
 
+// Updates buffers for music streaming
+//
 // llgo:link Music.UpdateMusicStream C.UpdateMusicStream
 func (self Music) UpdateMusicStream() {
 }
 
+// Stop music playing
+//
 // llgo:link Music.StopMusicStream C.StopMusicStream
 func (self Music) StopMusicStream() {
 }
 
+// Pause music playing
+//
 // llgo:link Music.PauseMusicStream C.PauseMusicStream
 func (self Music) PauseMusicStream() {
 }
 
+// Resume playing paused music
+//
 // llgo:link Music.ResumeMusicStream C.ResumeMusicStream
 func (self Music) ResumeMusicStream() {
 }
 
+// Seek music to a position (in seconds)
+//
 // llgo:link Music.SeekMusicStream C.SeekMusicStream
 func (self Music) SeekMusicStream(position c.Float) {
 }
 
+// Set volume for music (1.0 is max level)
+//
 // llgo:link Music.SetMusicVolume C.SetMusicVolume
 func (self Music) SetMusicVolume(volume c.Float) {
 }
 
+// Set pitch for a music (1.0 is base level)
+//
 // llgo:link Music.SetMusicPitch C.SetMusicPitch
 func (self Music) SetMusicPitch(pitch c.Float) {
 }
 
+// Set pan for a music (-1.0 left, 0.0 center, 1.0 right)
+//
 // llgo:link Music.SetMusicPan C.SetMusicPan
 func (self Music) SetMusicPan(pan c.Float) {
 }
 
+// Get music time length (in seconds)
+//
 // llgo:link Music.TimeLength C.GetMusicTimeLength
 func (self Music) TimeLength() c.Float {
 	return 0
 }
 
+// Get current music time played (in seconds)
+//
 // llgo:link Music.TimePlayed C.GetMusicTimePlayed
 func (self Music) TimePlayed() c.Float {
 	return 0
@@ -3363,74 +4154,110 @@ func (self Music) TimePlayed() c.Float {
 //go:linkname LoadAudioStream C.LoadAudioStream
 func LoadAudioStream(sampleRate c.Uint, sampleSize c.Uint, channels c.Uint) AudioStream
 
+// Checks if an audio stream is valid (buffers initialized)
+//
 // llgo:link AudioStream.IsAudioStreamValid C.IsAudioStreamValid
 func (self AudioStream) IsAudioStreamValid() bool {
 	return false
 }
 
+// Unload audio stream and free memory
+//
 // llgo:link AudioStream.Unload C.UnloadAudioStream
 func (self AudioStream) Unload() {
 }
 
+// Update audio stream buffers with data
+//
 // llgo:link AudioStream.Update C.UpdateAudioStream
 func (self AudioStream) Update(data unsafe.Pointer, frameCount c.Int) {
 }
 
+// Check if any audio stream buffers requires refill
+//
 // llgo:link AudioStream.IsAudioStreamProcessed C.IsAudioStreamProcessed
 func (self AudioStream) IsAudioStreamProcessed() bool {
 	return false
 }
 
+// Play audio stream
+//
 // llgo:link AudioStream.Play C.PlayAudioStream
 func (self AudioStream) Play() {
 }
 
+// Pause audio stream
+//
 // llgo:link AudioStream.Pause C.PauseAudioStream
 func (self AudioStream) Pause() {
 }
 
+// Resume audio stream
+//
 // llgo:link AudioStream.Resume C.ResumeAudioStream
 func (self AudioStream) Resume() {
 }
 
+// Check if audio stream is playing
+//
 // llgo:link AudioStream.IsAudioStreamPlaying C.IsAudioStreamPlaying
 func (self AudioStream) IsAudioStreamPlaying() bool {
 	return false
 }
 
+// Stop audio stream
+//
 // llgo:link AudioStream.Stop C.StopAudioStream
 func (self AudioStream) Stop() {
 }
 
+// Set volume for audio stream (1.0 is max level)
+//
 // llgo:link AudioStream.SetAudioStreamVolume C.SetAudioStreamVolume
 func (self AudioStream) SetAudioStreamVolume(volume c.Float) {
 }
 
+// Set pitch for audio stream (1.0 is base level)
+//
 // llgo:link AudioStream.SetAudioStreamPitch C.SetAudioStreamPitch
 func (self AudioStream) SetAudioStreamPitch(pitch c.Float) {
 }
 
+// Set pan for audio stream (-1.0 to 1.0 range, 0.0 is centered)
+//
 // llgo:link AudioStream.SetAudioStreamPan C.SetAudioStreamPan
 func (self AudioStream) SetAudioStreamPan(pan c.Float) {
 }
 
+// Default size for new audio streams
+//
 //go:linkname SetAudioStreamBufferSizeDefault C.SetAudioStreamBufferSizeDefault
 func SetAudioStreamBufferSizeDefault(size c.Int)
 
+// Audio thread callback to request new data
+//
 // llgo:link AudioStream.SetAudioStreamCallback C.SetAudioStreamCallback
 func (self AudioStream) SetAudioStreamCallback(callback AudioCallback) {
 }
 
+// Attach audio stream processor to stream, receives frames x 2 samples as 'float' (stereo)
+//
 // llgo:link AudioStream.AttachAudioStreamProcessor C.AttachAudioStreamProcessor
 func (self AudioStream) AttachAudioStreamProcessor(processor AudioCallback) {
 }
 
+// Detach audio stream processor from stream
+//
 // llgo:link AudioStream.DetachAudioStreamProcessor C.DetachAudioStreamProcessor
 func (self AudioStream) DetachAudioStreamProcessor(processor AudioCallback) {
 }
 
+// Attach audio stream processor to the entire audio pipeline, receives frames x 2 samples as 'float' (stereo)
+//
 //go:linkname AttachAudioMixedProcessor C.AttachAudioMixedProcessor
 func AttachAudioMixedProcessor(processor AudioCallback)
 
+// Detach audio stream processor from the entire audio pipeline
+//
 //go:linkname DetachAudioMixedProcessor C.DetachAudioMixedProcessor
 func DetachAudioMixedProcessor(processor AudioCallback)
