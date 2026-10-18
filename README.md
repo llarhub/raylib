@@ -1,5 +1,10 @@
 # raylib
 
+[![GoDoc](https://pkg.go.dev/badge/github.com/llarhub/raylib.svg)](https://pkg.go.dev/github.com/llarhub/raylib)
+[![GitHub release](https://img.shields.io/github/v/tag/llarhub/raylib.svg?label=release)](https://github.com/llarhub/raylib/releases)
+[![LLGo](https://img.shields.io/badge/powered_by-LLGo-green.svg)](https://github.com/xgo-dev/llgo)
+[![XGo](https://img.shields.io/badge/project-XGo-blue.svg)](https://github.com/goplus/xgo)
+
 LLGo bindings for raylib 6.0.0. The generated package exposes the public `raylib.h` API, camera helpers from `rcamera.h`, and raylib value types and constants. Functions that take a raylib struct as their first argument are available as methods where LLGo can represent that form.
 
 ## Installation
