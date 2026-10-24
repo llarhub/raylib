@@ -46,7 +46,7 @@ var gameOver = false
 
 func genShape() {
 	curShape = SHAPES[raylib.GetRandomValue(c.Int(0), c.Int(6))]
-	curPos = raylib.Vector2{BOARD_WIDTH/2 - 1, 0}
+	curPos = raylib.Vector2{X: BOARD_WIDTH/2 - 1, Y: 0}
 }
 
 func checkCollision() bool {
