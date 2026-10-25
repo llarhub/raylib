@@ -55,14 +55,6 @@ type Matrix struct {
 	M15 c.Float
 }
 
-// Color, 4 components, R8G8B8A8 (32bit)
-type Color struct {
-	R uint8
-	G uint8
-	B uint8
-	A uint8
-}
-
 // Rectangle, 4 components
 type Rectangle struct {
 	X      c.Float
@@ -814,34 +806,34 @@ type ModelAnimPose = *Transform
 // Callbacks to hook some internal functions
 // WARNING: These callbacks are intended for advanced users
 //
-// llgo:type C
+//llgo:cdecl
 type TraceLogCallback = func(_llcppg_param1 c.Int, _llcppg_param2 *c.Char, _llcppg_param3 c.VaList)
 
 // FileIO: Load binary data
 //
-// llgo:type C
+//llgo:cdecl
 type LoadFileDataCallback = func(_llcppg_param1 *c.Char, _llcppg_param2 *c.Int) *uint8
 
 // FileIO: Save binary data
 //
-// llgo:type C
+//llgo:cdecl
 type SaveFileDataCallback = func(_llcppg_param1 *c.Char, _llcppg_param2 unsafe.Pointer, _llcppg_param3 c.Int) bool
 
 // FileIO: Load text data
 //
-// llgo:type C
+//llgo:cdecl
 type LoadFileTextCallback = func(_llcppg_param1 *c.Char) *c.Char
 
 // FileIO: Save text data
 //
-// llgo:type C
+//llgo:cdecl
 type SaveFileTextCallback = func(_llcppg_param1 *c.Char, _llcppg_param2 *c.Char) bool
 
 // ------------------------------------------------------------------------------------
 // Audio Loading and Playing Functions (Module: audio)
 // ------------------------------------------------------------------------------------
 //
-// llgo:type C
+//llgo:cdecl
 type AudioCallback = func(_llcppg_param1 unsafe.Pointer, _llcppg_param2 c.Uint)
 
 // Window-related functions
@@ -1123,9 +1115,8 @@ func IsCursorOnScreen() bool
 
 // Drawing-related functions
 //
-// llgo:link Color.ClearBackground C.ClearBackground
-func (self Color) ClearBackground() {
-}
+//go:linkname ClearBackground C.ClearBackground
+func ClearBackground(color Color)
 
 // Setup canvas (framebuffer) to start drawing
 //
@@ -2725,15 +2716,13 @@ func (self Image) LoadImagePalette(maxPaletteSize c.Int, colorCount *c.Int) *Col
 
 // Unload color data loaded with LoadImageColors()
 //
-// llgo:link (*Color).UnloadImageColors C.UnloadImageColors
-func (self *Color) UnloadImageColors() {
-}
+//go:linkname UnloadImageColors C.UnloadImageColors
+func UnloadImageColors(colors *Color)
 
 // Unload colors palette loaded with LoadImagePalette()
 //
-// llgo:link (*Color).UnloadImagePalette C.UnloadImagePalette
-func (self *Color) UnloadImagePalette() {
-}
+//go:linkname UnloadImagePalette C.UnloadImagePalette
+func UnloadImagePalette(colors *Color)
 
 // Get image alpha border rectangle
 //
@@ -2746,7 +2735,7 @@ func (self Image) AlphaBorder(threshold c.Float) Rectangle {
 //
 // llgo:link Image.Color C.GetImageColor
 func (self Image) Color(x c.Int, y c.Int) Color {
-	return Color{}
+	return 0
 }
 
 // Image drawing functions
@@ -3006,38 +2995,30 @@ func ColorIsEqual(col1 Color, col2 Color) bool
 
 // Get color with alpha applied, alpha goes from 0.0f to 1.0f
 //
-// llgo:link Color.Fade C.Fade
-func (self Color) Fade(alpha c.Float) Color {
-	return self
-}
+//go:linkname Fade C.Fade
+func Fade(color Color, alpha c.Float) Color
 
 // Get hexadecimal value for a Color (0xRRGGBBAA)
 //
-// llgo:link Color.ToInt C.ColorToInt
-func (self Color) ToInt() c.Int {
-	return 0
-}
+//go:linkname ColorToInt C.ColorToInt
+func ColorToInt(color Color) c.Int
 
 // Get Color normalized as float [0..1]
 //
-// llgo:link Color.Normalize C.ColorNormalize
-func (self Color) Normalize() Vector4 {
-	return Vector4{}
-}
+//go:linkname ColorNormalize C.ColorNormalize
+func ColorNormalize(color Color) Vector4
 
 // Get Color from normalized values [0..1]
 //
 // llgo:link Vector4.ColorFromNormalized C.ColorFromNormalized
 func (self Vector4) ColorFromNormalized() Color {
-	return Color{}
+	return 0
 }
 
 // Get HSV values for a Color, hue [0..360], saturation/value [0..1]
 //
-// llgo:link Color.ToHSV C.ColorToHSV
-func (self Color) ToHSV() Vector3 {
-	return Vector3{}
-}
+//go:linkname ColorToHSV C.ColorToHSV
+func ColorToHSV(color Color) Vector3
 
 // Get a Color from HSV values, hue [0..360], saturation/value [0..1]
 //
@@ -3051,38 +3032,28 @@ func ColorTint(color Color, tint Color) Color
 
 // Get color with brightness correction, brightness factor goes from -1.0f to 1.0f
 //
-// llgo:link Color.Brightness C.ColorBrightness
-func (self Color) Brightness(factor c.Float) Color {
-	return self
-}
+//go:linkname ColorBrightness C.ColorBrightness
+func ColorBrightness(color Color, factor c.Float) Color
 
 // Get color with contrast correction, contrast values between -1.0f and 1.0f
 //
-// llgo:link Color.Contrast C.ColorContrast
-func (self Color) Contrast(contrast c.Float) Color {
-	return self
-}
+//go:linkname ColorContrast C.ColorContrast
+func ColorContrast(color Color, contrast c.Float) Color
 
 // Get color with alpha applied, alpha goes from 0.0f to 1.0f
 //
-// llgo:link Color.Alpha C.ColorAlpha
-func (self Color) Alpha(alpha c.Float) Color {
-	return self
-}
+//go:linkname ColorAlpha C.ColorAlpha
+func ColorAlpha(color Color, alpha c.Float) Color
 
 // Get src alpha-blended into dst color with tint
 //
-// llgo:link Color.AlphaBlend C.ColorAlphaBlend
-func (self Color) AlphaBlend(src Color, tint Color) Color {
-	return self
-}
+//go:linkname ColorAlphaBlend C.ColorAlphaBlend
+func ColorAlphaBlend(dst Color, src Color, tint Color) Color
 
 // Get color lerp interpolation between two colors, factor [0.0f..1.0f]
 //
-// llgo:link Color.Lerp C.ColorLerp
-func (self Color) Lerp(color2 Color, factor c.Float) Color {
-	return self
-}
+//go:linkname ColorLerp C.ColorLerp
+func ColorLerp(color1 Color, color2 Color, factor c.Float) Color
 
 // Get Color structure from hexadecimal value
 //
