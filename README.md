@@ -29,11 +29,11 @@ import (
 )
 
 func main() {
-	raylib.InitWindow(800, 450, c.AllocaCStr("raylib + LLGo"))
+	raylib.InitWindow(800, 450, c.Str("raylib + LLGo"))
 	defer raylib.CloseWindow()
 	for !raylib.WindowShouldClose() {
 		raylib.BeginDrawing()
-		raylib.RAYWHITE.ClearBackground()
+		raylib.ClearBackground(raylib.RAYWHITE)
 		raylib.EndDrawing()
 	}
 }
