@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/goplus/lib/c"
-	"github.com/goplus/lib/c/raylib"
+	"github.com/llarhub/raylib"
 )
 
 func main() {

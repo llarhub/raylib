@@ -322,23 +322,23 @@ type AutomationEventList struct {
 type ConfigFlags c.Uint
 
 const (
-	FLAG_VSYNC_HINT               ConfigFlags = 64
-	FLAG_FULLSCREEN_MODE          ConfigFlags = 2
-	FLAG_WINDOW_RESIZABLE         ConfigFlags = 4
-	FLAG_WINDOW_UNDECORATED       ConfigFlags = 8
-	FLAG_WINDOW_HIDDEN            ConfigFlags = 128
-	FLAG_WINDOW_MINIMIZED         ConfigFlags = 512
-	FLAG_WINDOW_MAXIMIZED         ConfigFlags = 1024
-	FLAG_WINDOW_UNFOCUSED         ConfigFlags = 2048
-	FLAG_WINDOW_TOPMOST           ConfigFlags = 4096
-	FLAG_WINDOW_ALWAYS_RUN        ConfigFlags = 256
-	FLAG_WINDOW_TRANSPARENT       ConfigFlags = 16
-	FLAG_WINDOW_HIGHDPI           ConfigFlags = 8192
-	FLAG_WINDOW_MOUSE_PASSTHROUGH ConfigFlags = 16384
-	FLAG_BORDERLESS_WINDOWED_MODE ConfigFlags = 32768
-	FLAG_MSAA_4X_HINT             ConfigFlags = 32
+	FLAG_VSYNC_HINT               = 64
+	FLAG_FULLSCREEN_MODE          = 2
+	FLAG_WINDOW_RESIZABLE         = 4
+	FLAG_WINDOW_UNDECORATED       = 8
+	FLAG_WINDOW_HIDDEN            = 128
+	FLAG_WINDOW_MINIMIZED         = 512
+	FLAG_WINDOW_MAXIMIZED         = 1024
+	FLAG_WINDOW_UNFOCUSED         = 2048
+	FLAG_WINDOW_TOPMOST           = 4096
+	FLAG_WINDOW_ALWAYS_RUN        = 256
+	FLAG_WINDOW_TRANSPARENT       = 16
+	FLAG_WINDOW_HIGHDPI           = 8192
+	FLAG_WINDOW_MOUSE_PASSTHROUGH = 16384
+	FLAG_BORDERLESS_WINDOWED_MODE = 32768
+	FLAG_MSAA_4X_HINT             = 32
 	// Set to try enabling interlaced video format (for V3D)
-	FLAG_INTERLACED_HINT ConfigFlags = 65536
+	FLAG_INTERLACED_HINT = 65536
 )
 
 // Trace log level
@@ -346,15 +346,15 @@ const (
 type TraceLogLevel c.Uint
 
 const (
-	LOG_ALL     TraceLogLevel = 0
-	LOG_TRACE   TraceLogLevel = 1
-	LOG_DEBUG   TraceLogLevel = 2
-	LOG_INFO    TraceLogLevel = 3
-	LOG_WARNING TraceLogLevel = 4
-	LOG_ERROR   TraceLogLevel = 5
-	LOG_FATAL   TraceLogLevel = 6
+	LOG_ALL     = 0
+	LOG_TRACE   = 1
+	LOG_DEBUG   = 2
+	LOG_INFO    = 3
+	LOG_WARNING = 4
+	LOG_ERROR   = 5
+	LOG_FATAL   = 6
 	// Disable logging
-	LOG_NONE TraceLogLevel = 7
+	LOG_NONE = 7
 )
 
 // Keyboard keys (US keyboard layout)
@@ -362,208 +362,208 @@ const (
 type KeyboardKey c.Uint
 
 const (
-	KEY_NULL KeyboardKey = 0
+	KEY_NULL = 0
 	// Alphanumeric keys
-	KEY_APOSTROPHE    KeyboardKey = 39
-	KEY_COMMA         KeyboardKey = 44
-	KEY_MINUS         KeyboardKey = 45
-	KEY_PERIOD        KeyboardKey = 46
-	KEY_SLASH         KeyboardKey = 47
-	KEY_ZERO          KeyboardKey = 48
-	KEY_ONE           KeyboardKey = 49
-	KEY_TWO           KeyboardKey = 50
-	KEY_THREE         KeyboardKey = 51
-	KEY_FOUR          KeyboardKey = 52
-	KEY_FIVE          KeyboardKey = 53
-	KEY_SIX           KeyboardKey = 54
-	KEY_SEVEN         KeyboardKey = 55
-	KEY_EIGHT         KeyboardKey = 56
-	KEY_NINE          KeyboardKey = 57
-	KEY_SEMICOLON     KeyboardKey = 59
-	KEY_EQUAL         KeyboardKey = 61
-	KEY_A             KeyboardKey = 65
-	KEY_B             KeyboardKey = 66
-	KEY_C             KeyboardKey = 67
-	KEY_D             KeyboardKey = 68
-	KEY_E             KeyboardKey = 69
-	KEY_F             KeyboardKey = 70
-	KEY_G             KeyboardKey = 71
-	KEY_H             KeyboardKey = 72
-	KEY_I             KeyboardKey = 73
-	KEY_J             KeyboardKey = 74
-	KEY_K             KeyboardKey = 75
-	KEY_L             KeyboardKey = 76
-	KEY_M             KeyboardKey = 77
-	KEY_N             KeyboardKey = 78
-	KEY_O             KeyboardKey = 79
-	KEY_P             KeyboardKey = 80
-	KEY_Q             KeyboardKey = 81
-	KEY_R             KeyboardKey = 82
-	KEY_S             KeyboardKey = 83
-	KEY_T             KeyboardKey = 84
-	KEY_U             KeyboardKey = 85
-	KEY_V             KeyboardKey = 86
-	KEY_W             KeyboardKey = 87
-	KEY_X             KeyboardKey = 88
-	KEY_Y             KeyboardKey = 89
-	KEY_Z             KeyboardKey = 90
-	KEY_LEFT_BRACKET  KeyboardKey = 91
-	KEY_BACKSLASH     KeyboardKey = 92
-	KEY_RIGHT_BRACKET KeyboardKey = 93
-	KEY_GRAVE         KeyboardKey = 96
+	KEY_APOSTROPHE    = 39
+	KEY_COMMA         = 44
+	KEY_MINUS         = 45
+	KEY_PERIOD        = 46
+	KEY_SLASH         = 47
+	KEY_ZERO          = 48
+	KEY_ONE           = 49
+	KEY_TWO           = 50
+	KEY_THREE         = 51
+	KEY_FOUR          = 52
+	KEY_FIVE          = 53
+	KEY_SIX           = 54
+	KEY_SEVEN         = 55
+	KEY_EIGHT         = 56
+	KEY_NINE          = 57
+	KEY_SEMICOLON     = 59
+	KEY_EQUAL         = 61
+	KEY_A             = 65
+	KEY_B             = 66
+	KEY_C             = 67
+	KEY_D             = 68
+	KEY_E             = 69
+	KEY_F             = 70
+	KEY_G             = 71
+	KEY_H             = 72
+	KEY_I             = 73
+	KEY_J             = 74
+	KEY_K             = 75
+	KEY_L             = 76
+	KEY_M             = 77
+	KEY_N             = 78
+	KEY_O             = 79
+	KEY_P             = 80
+	KEY_Q             = 81
+	KEY_R             = 82
+	KEY_S             = 83
+	KEY_T             = 84
+	KEY_U             = 85
+	KEY_V             = 86
+	KEY_W             = 87
+	KEY_X             = 88
+	KEY_Y             = 89
+	KEY_Z             = 90
+	KEY_LEFT_BRACKET  = 91
+	KEY_BACKSLASH     = 92
+	KEY_RIGHT_BRACKET = 93
+	KEY_GRAVE         = 96
 	// Function keys
-	KEY_SPACE         KeyboardKey = 32
-	KEY_ESCAPE        KeyboardKey = 256
-	KEY_ENTER         KeyboardKey = 257
-	KEY_TAB           KeyboardKey = 258
-	KEY_BACKSPACE     KeyboardKey = 259
-	KEY_INSERT        KeyboardKey = 260
-	KEY_DELETE        KeyboardKey = 261
-	KEY_RIGHT         KeyboardKey = 262
-	KEY_LEFT          KeyboardKey = 263
-	KEY_DOWN          KeyboardKey = 264
-	KEY_UP            KeyboardKey = 265
-	KEY_PAGE_UP       KeyboardKey = 266
-	KEY_PAGE_DOWN     KeyboardKey = 267
-	KEY_HOME          KeyboardKey = 268
-	KEY_END           KeyboardKey = 269
-	KEY_CAPS_LOCK     KeyboardKey = 280
-	KEY_SCROLL_LOCK   KeyboardKey = 281
-	KEY_NUM_LOCK      KeyboardKey = 282
-	KEY_PRINT_SCREEN  KeyboardKey = 283
-	KEY_PAUSE         KeyboardKey = 284
-	KEY_F1            KeyboardKey = 290
-	KEY_F2            KeyboardKey = 291
-	KEY_F3            KeyboardKey = 292
-	KEY_F4            KeyboardKey = 293
-	KEY_F5            KeyboardKey = 294
-	KEY_F6            KeyboardKey = 295
-	KEY_F7            KeyboardKey = 296
-	KEY_F8            KeyboardKey = 297
-	KEY_F9            KeyboardKey = 298
-	KEY_F10           KeyboardKey = 299
-	KEY_F11           KeyboardKey = 300
-	KEY_F12           KeyboardKey = 301
-	KEY_LEFT_SHIFT    KeyboardKey = 340
-	KEY_LEFT_CONTROL  KeyboardKey = 341
-	KEY_LEFT_ALT      KeyboardKey = 342
-	KEY_LEFT_SUPER    KeyboardKey = 343
-	KEY_RIGHT_SHIFT   KeyboardKey = 344
-	KEY_RIGHT_CONTROL KeyboardKey = 345
-	KEY_RIGHT_ALT     KeyboardKey = 346
-	KEY_RIGHT_SUPER   KeyboardKey = 347
-	KEY_KB_MENU       KeyboardKey = 348
+	KEY_SPACE         = 32
+	KEY_ESCAPE        = 256
+	KEY_ENTER         = 257
+	KEY_TAB           = 258
+	KEY_BACKSPACE     = 259
+	KEY_INSERT        = 260
+	KEY_DELETE        = 261
+	KEY_RIGHT         = 262
+	KEY_LEFT          = 263
+	KEY_DOWN          = 264
+	KEY_UP            = 265
+	KEY_PAGE_UP       = 266
+	KEY_PAGE_DOWN     = 267
+	KEY_HOME          = 268
+	KEY_END           = 269
+	KEY_CAPS_LOCK     = 280
+	KEY_SCROLL_LOCK   = 281
+	KEY_NUM_LOCK      = 282
+	KEY_PRINT_SCREEN  = 283
+	KEY_PAUSE         = 284
+	KEY_F1            = 290
+	KEY_F2            = 291
+	KEY_F3            = 292
+	KEY_F4            = 293
+	KEY_F5            = 294
+	KEY_F6            = 295
+	KEY_F7            = 296
+	KEY_F8            = 297
+	KEY_F9            = 298
+	KEY_F10           = 299
+	KEY_F11           = 300
+	KEY_F12           = 301
+	KEY_LEFT_SHIFT    = 340
+	KEY_LEFT_CONTROL  = 341
+	KEY_LEFT_ALT      = 342
+	KEY_LEFT_SUPER    = 343
+	KEY_RIGHT_SHIFT   = 344
+	KEY_RIGHT_CONTROL = 345
+	KEY_RIGHT_ALT     = 346
+	KEY_RIGHT_SUPER   = 347
+	KEY_KB_MENU       = 348
 	// Keypad keys
-	KEY_KP_0        KeyboardKey = 320
-	KEY_KP_1        KeyboardKey = 321
-	KEY_KP_2        KeyboardKey = 322
-	KEY_KP_3        KeyboardKey = 323
-	KEY_KP_4        KeyboardKey = 324
-	KEY_KP_5        KeyboardKey = 325
-	KEY_KP_6        KeyboardKey = 326
-	KEY_KP_7        KeyboardKey = 327
-	KEY_KP_8        KeyboardKey = 328
-	KEY_KP_9        KeyboardKey = 329
-	KEY_KP_DECIMAL  KeyboardKey = 330
-	KEY_KP_DIVIDE   KeyboardKey = 331
-	KEY_KP_MULTIPLY KeyboardKey = 332
-	KEY_KP_SUBTRACT KeyboardKey = 333
-	KEY_KP_ADD      KeyboardKey = 334
-	KEY_KP_ENTER    KeyboardKey = 335
-	KEY_KP_EQUAL    KeyboardKey = 336
+	KEY_KP_0        = 320
+	KEY_KP_1        = 321
+	KEY_KP_2        = 322
+	KEY_KP_3        = 323
+	KEY_KP_4        = 324
+	KEY_KP_5        = 325
+	KEY_KP_6        = 326
+	KEY_KP_7        = 327
+	KEY_KP_8        = 328
+	KEY_KP_9        = 329
+	KEY_KP_DECIMAL  = 330
+	KEY_KP_DIVIDE   = 331
+	KEY_KP_MULTIPLY = 332
+	KEY_KP_SUBTRACT = 333
+	KEY_KP_ADD      = 334
+	KEY_KP_ENTER    = 335
+	KEY_KP_EQUAL    = 336
 	// Android key buttons
-	KEY_BACK      KeyboardKey = 4
-	KEY_MENU      KeyboardKey = 5
-	KEY_VOLUME_UP KeyboardKey = 24
+	KEY_BACK      = 4
+	KEY_MENU      = 5
+	KEY_VOLUME_UP = 24
 	// Key: Android volume down button
-	KEY_VOLUME_DOWN KeyboardKey = 25
+	KEY_VOLUME_DOWN = 25
 )
 
 // Mouse buttons
 type MouseButton c.Uint
 
 const (
-	MOUSE_BUTTON_LEFT    MouseButton = 0
-	MOUSE_BUTTON_RIGHT   MouseButton = 1
-	MOUSE_BUTTON_MIDDLE  MouseButton = 2
-	MOUSE_BUTTON_SIDE    MouseButton = 3
-	MOUSE_BUTTON_EXTRA   MouseButton = 4
-	MOUSE_BUTTON_FORWARD MouseButton = 5
-	MOUSE_BUTTON_BACK    MouseButton = 6
+	MOUSE_BUTTON_LEFT    = 0
+	MOUSE_BUTTON_RIGHT   = 1
+	MOUSE_BUTTON_MIDDLE  = 2
+	MOUSE_BUTTON_SIDE    = 3
+	MOUSE_BUTTON_EXTRA   = 4
+	MOUSE_BUTTON_FORWARD = 5
+	MOUSE_BUTTON_BACK    = 6
 )
 
 // Mouse cursor
 type MouseCursor c.Uint
 
 const (
-	MOUSE_CURSOR_DEFAULT       MouseCursor = 0
-	MOUSE_CURSOR_ARROW         MouseCursor = 1
-	MOUSE_CURSOR_IBEAM         MouseCursor = 2
-	MOUSE_CURSOR_CROSSHAIR     MouseCursor = 3
-	MOUSE_CURSOR_POINTING_HAND MouseCursor = 4
-	MOUSE_CURSOR_RESIZE_EW     MouseCursor = 5
-	MOUSE_CURSOR_RESIZE_NS     MouseCursor = 6
-	MOUSE_CURSOR_RESIZE_NWSE   MouseCursor = 7
-	MOUSE_CURSOR_RESIZE_NESW   MouseCursor = 8
-	MOUSE_CURSOR_RESIZE_ALL    MouseCursor = 9
+	MOUSE_CURSOR_DEFAULT       = 0
+	MOUSE_CURSOR_ARROW         = 1
+	MOUSE_CURSOR_IBEAM         = 2
+	MOUSE_CURSOR_CROSSHAIR     = 3
+	MOUSE_CURSOR_POINTING_HAND = 4
+	MOUSE_CURSOR_RESIZE_EW     = 5
+	MOUSE_CURSOR_RESIZE_NS     = 6
+	MOUSE_CURSOR_RESIZE_NWSE   = 7
+	MOUSE_CURSOR_RESIZE_NESW   = 8
+	MOUSE_CURSOR_RESIZE_ALL    = 9
 	// The operation-not-allowed shape
-	MOUSE_CURSOR_NOT_ALLOWED MouseCursor = 10
+	MOUSE_CURSOR_NOT_ALLOWED = 10
 )
 
 // Gamepad buttons
 type GamepadButton c.Uint
 
 const (
-	GAMEPAD_BUTTON_UNKNOWN          GamepadButton = 0
-	GAMEPAD_BUTTON_LEFT_FACE_UP     GamepadButton = 1
-	GAMEPAD_BUTTON_LEFT_FACE_RIGHT  GamepadButton = 2
-	GAMEPAD_BUTTON_LEFT_FACE_DOWN   GamepadButton = 3
-	GAMEPAD_BUTTON_LEFT_FACE_LEFT   GamepadButton = 4
-	GAMEPAD_BUTTON_RIGHT_FACE_UP    GamepadButton = 5
-	GAMEPAD_BUTTON_RIGHT_FACE_RIGHT GamepadButton = 6
-	GAMEPAD_BUTTON_RIGHT_FACE_DOWN  GamepadButton = 7
-	GAMEPAD_BUTTON_RIGHT_FACE_LEFT  GamepadButton = 8
-	GAMEPAD_BUTTON_LEFT_TRIGGER_1   GamepadButton = 9
-	GAMEPAD_BUTTON_LEFT_TRIGGER_2   GamepadButton = 10
-	GAMEPAD_BUTTON_RIGHT_TRIGGER_1  GamepadButton = 11
-	GAMEPAD_BUTTON_RIGHT_TRIGGER_2  GamepadButton = 12
-	GAMEPAD_BUTTON_MIDDLE_LEFT      GamepadButton = 13
-	GAMEPAD_BUTTON_MIDDLE           GamepadButton = 14
-	GAMEPAD_BUTTON_MIDDLE_RIGHT     GamepadButton = 15
-	GAMEPAD_BUTTON_LEFT_THUMB       GamepadButton = 16
+	GAMEPAD_BUTTON_UNKNOWN          = 0
+	GAMEPAD_BUTTON_LEFT_FACE_UP     = 1
+	GAMEPAD_BUTTON_LEFT_FACE_RIGHT  = 2
+	GAMEPAD_BUTTON_LEFT_FACE_DOWN   = 3
+	GAMEPAD_BUTTON_LEFT_FACE_LEFT   = 4
+	GAMEPAD_BUTTON_RIGHT_FACE_UP    = 5
+	GAMEPAD_BUTTON_RIGHT_FACE_RIGHT = 6
+	GAMEPAD_BUTTON_RIGHT_FACE_DOWN  = 7
+	GAMEPAD_BUTTON_RIGHT_FACE_LEFT  = 8
+	GAMEPAD_BUTTON_LEFT_TRIGGER_1   = 9
+	GAMEPAD_BUTTON_LEFT_TRIGGER_2   = 10
+	GAMEPAD_BUTTON_RIGHT_TRIGGER_1  = 11
+	GAMEPAD_BUTTON_RIGHT_TRIGGER_2  = 12
+	GAMEPAD_BUTTON_MIDDLE_LEFT      = 13
+	GAMEPAD_BUTTON_MIDDLE           = 14
+	GAMEPAD_BUTTON_MIDDLE_RIGHT     = 15
+	GAMEPAD_BUTTON_LEFT_THUMB       = 16
 	// Gamepad joystick pressed button right
-	GAMEPAD_BUTTON_RIGHT_THUMB GamepadButton = 17
+	GAMEPAD_BUTTON_RIGHT_THUMB = 17
 )
 
 // Gamepad axes
 type GamepadAxis c.Uint
 
 const (
-	GAMEPAD_AXIS_LEFT_X       GamepadAxis = 0
-	GAMEPAD_AXIS_LEFT_Y       GamepadAxis = 1
-	GAMEPAD_AXIS_RIGHT_X      GamepadAxis = 2
-	GAMEPAD_AXIS_RIGHT_Y      GamepadAxis = 3
-	GAMEPAD_AXIS_LEFT_TRIGGER GamepadAxis = 4
+	GAMEPAD_AXIS_LEFT_X       = 0
+	GAMEPAD_AXIS_LEFT_Y       = 1
+	GAMEPAD_AXIS_RIGHT_X      = 2
+	GAMEPAD_AXIS_RIGHT_Y      = 3
+	GAMEPAD_AXIS_LEFT_TRIGGER = 4
 	// Gamepad back trigger right, pressure level: [1..-1]
-	GAMEPAD_AXIS_RIGHT_TRIGGER GamepadAxis = 5
+	GAMEPAD_AXIS_RIGHT_TRIGGER = 5
 )
 
 // Material map index
 type MaterialMapIndex c.Uint
 
 const (
-	MATERIAL_MAP_ALBEDO     MaterialMapIndex = 0
-	MATERIAL_MAP_METALNESS  MaterialMapIndex = 1
-	MATERIAL_MAP_NORMAL     MaterialMapIndex = 2
-	MATERIAL_MAP_ROUGHNESS  MaterialMapIndex = 3
-	MATERIAL_MAP_OCCLUSION  MaterialMapIndex = 4
-	MATERIAL_MAP_EMISSION   MaterialMapIndex = 5
-	MATERIAL_MAP_HEIGHT     MaterialMapIndex = 6
-	MATERIAL_MAP_CUBEMAP    MaterialMapIndex = 7
-	MATERIAL_MAP_IRRADIANCE MaterialMapIndex = 8
-	MATERIAL_MAP_PREFILTER  MaterialMapIndex = 9
+	MATERIAL_MAP_ALBEDO     = 0
+	MATERIAL_MAP_METALNESS  = 1
+	MATERIAL_MAP_NORMAL     = 2
+	MATERIAL_MAP_ROUGHNESS  = 3
+	MATERIAL_MAP_OCCLUSION  = 4
+	MATERIAL_MAP_EMISSION   = 5
+	MATERIAL_MAP_HEIGHT     = 6
+	MATERIAL_MAP_CUBEMAP    = 7
+	MATERIAL_MAP_IRRADIANCE = 8
+	MATERIAL_MAP_PREFILTER  = 9
 	// Brdf material
-	MATERIAL_MAP_BRDF MaterialMapIndex = 10
+	MATERIAL_MAP_BRDF = 10
 )
 
 // Shader location index
@@ -572,68 +572,68 @@ const (
 type ShaderLocationIndex c.Uint
 
 const (
-	SHADER_LOC_VERTEX_POSITION       ShaderLocationIndex = 0
-	SHADER_LOC_VERTEX_TEXCOORD01     ShaderLocationIndex = 1
-	SHADER_LOC_VERTEX_TEXCOORD02     ShaderLocationIndex = 2
-	SHADER_LOC_VERTEX_NORMAL         ShaderLocationIndex = 3
-	SHADER_LOC_VERTEX_TANGENT        ShaderLocationIndex = 4
-	SHADER_LOC_VERTEX_COLOR          ShaderLocationIndex = 5
-	SHADER_LOC_MATRIX_MVP            ShaderLocationIndex = 6
-	SHADER_LOC_MATRIX_VIEW           ShaderLocationIndex = 7
-	SHADER_LOC_MATRIX_PROJECTION     ShaderLocationIndex = 8
-	SHADER_LOC_MATRIX_MODEL          ShaderLocationIndex = 9
-	SHADER_LOC_MATRIX_NORMAL         ShaderLocationIndex = 10
-	SHADER_LOC_VECTOR_VIEW           ShaderLocationIndex = 11
-	SHADER_LOC_COLOR_DIFFUSE         ShaderLocationIndex = 12
-	SHADER_LOC_COLOR_SPECULAR        ShaderLocationIndex = 13
-	SHADER_LOC_COLOR_AMBIENT         ShaderLocationIndex = 14
-	SHADER_LOC_MAP_ALBEDO            ShaderLocationIndex = 15
-	SHADER_LOC_MAP_METALNESS         ShaderLocationIndex = 16
-	SHADER_LOC_MAP_NORMAL            ShaderLocationIndex = 17
-	SHADER_LOC_MAP_ROUGHNESS         ShaderLocationIndex = 18
-	SHADER_LOC_MAP_OCCLUSION         ShaderLocationIndex = 19
-	SHADER_LOC_MAP_EMISSION          ShaderLocationIndex = 20
-	SHADER_LOC_MAP_HEIGHT            ShaderLocationIndex = 21
-	SHADER_LOC_MAP_CUBEMAP           ShaderLocationIndex = 22
-	SHADER_LOC_MAP_IRRADIANCE        ShaderLocationIndex = 23
-	SHADER_LOC_MAP_PREFILTER         ShaderLocationIndex = 24
-	SHADER_LOC_MAP_BRDF              ShaderLocationIndex = 25
-	SHADER_LOC_VERTEX_BONEIDS        ShaderLocationIndex = 26
-	SHADER_LOC_VERTEX_BONEWEIGHTS    ShaderLocationIndex = 27
-	SHADER_LOC_MATRIX_BONETRANSFORMS ShaderLocationIndex = 28
+	SHADER_LOC_VERTEX_POSITION       = 0
+	SHADER_LOC_VERTEX_TEXCOORD01     = 1
+	SHADER_LOC_VERTEX_TEXCOORD02     = 2
+	SHADER_LOC_VERTEX_NORMAL         = 3
+	SHADER_LOC_VERTEX_TANGENT        = 4
+	SHADER_LOC_VERTEX_COLOR          = 5
+	SHADER_LOC_MATRIX_MVP            = 6
+	SHADER_LOC_MATRIX_VIEW           = 7
+	SHADER_LOC_MATRIX_PROJECTION     = 8
+	SHADER_LOC_MATRIX_MODEL          = 9
+	SHADER_LOC_MATRIX_NORMAL         = 10
+	SHADER_LOC_VECTOR_VIEW           = 11
+	SHADER_LOC_COLOR_DIFFUSE         = 12
+	SHADER_LOC_COLOR_SPECULAR        = 13
+	SHADER_LOC_COLOR_AMBIENT         = 14
+	SHADER_LOC_MAP_ALBEDO            = 15
+	SHADER_LOC_MAP_METALNESS         = 16
+	SHADER_LOC_MAP_NORMAL            = 17
+	SHADER_LOC_MAP_ROUGHNESS         = 18
+	SHADER_LOC_MAP_OCCLUSION         = 19
+	SHADER_LOC_MAP_EMISSION          = 20
+	SHADER_LOC_MAP_HEIGHT            = 21
+	SHADER_LOC_MAP_CUBEMAP           = 22
+	SHADER_LOC_MAP_IRRADIANCE        = 23
+	SHADER_LOC_MAP_PREFILTER         = 24
+	SHADER_LOC_MAP_BRDF              = 25
+	SHADER_LOC_VERTEX_BONEIDS        = 26
+	SHADER_LOC_VERTEX_BONEWEIGHTS    = 27
+	SHADER_LOC_MATRIX_BONETRANSFORMS = 28
 	// Shader location: vertex attribute: instance transforms
-	SHADER_LOC_VERTEX_INSTANCETRANSFORM ShaderLocationIndex = 29
+	SHADER_LOC_VERTEX_INSTANCETRANSFORM = 29
 )
 
 // Shader uniform data type
 type ShaderUniformDataType c.Uint
 
 const (
-	SHADER_UNIFORM_FLOAT  ShaderUniformDataType = 0
-	SHADER_UNIFORM_VEC2   ShaderUniformDataType = 1
-	SHADER_UNIFORM_VEC3   ShaderUniformDataType = 2
-	SHADER_UNIFORM_VEC4   ShaderUniformDataType = 3
-	SHADER_UNIFORM_INT    ShaderUniformDataType = 4
-	SHADER_UNIFORM_IVEC2  ShaderUniformDataType = 5
-	SHADER_UNIFORM_IVEC3  ShaderUniformDataType = 6
-	SHADER_UNIFORM_IVEC4  ShaderUniformDataType = 7
-	SHADER_UNIFORM_UINT   ShaderUniformDataType = 8
-	SHADER_UNIFORM_UIVEC2 ShaderUniformDataType = 9
-	SHADER_UNIFORM_UIVEC3 ShaderUniformDataType = 10
-	SHADER_UNIFORM_UIVEC4 ShaderUniformDataType = 11
+	SHADER_UNIFORM_FLOAT  = 0
+	SHADER_UNIFORM_VEC2   = 1
+	SHADER_UNIFORM_VEC3   = 2
+	SHADER_UNIFORM_VEC4   = 3
+	SHADER_UNIFORM_INT    = 4
+	SHADER_UNIFORM_IVEC2  = 5
+	SHADER_UNIFORM_IVEC3  = 6
+	SHADER_UNIFORM_IVEC4  = 7
+	SHADER_UNIFORM_UINT   = 8
+	SHADER_UNIFORM_UIVEC2 = 9
+	SHADER_UNIFORM_UIVEC3 = 10
+	SHADER_UNIFORM_UIVEC4 = 11
 	// Shader uniform type: sampler2d
-	SHADER_UNIFORM_SAMPLER2D ShaderUniformDataType = 12
+	SHADER_UNIFORM_SAMPLER2D = 12
 )
 
 // Shader attribute data types
 type ShaderAttributeDataType c.Uint
 
 const (
-	SHADER_ATTRIB_FLOAT ShaderAttributeDataType = 0
-	SHADER_ATTRIB_VEC2  ShaderAttributeDataType = 1
-	SHADER_ATTRIB_VEC3  ShaderAttributeDataType = 2
+	SHADER_ATTRIB_FLOAT = 0
+	SHADER_ATTRIB_VEC2  = 1
+	SHADER_ATTRIB_VEC3  = 2
 	// Shader attribute type: vec4 (4 float)
-	SHADER_ATTRIB_VEC4 ShaderAttributeDataType = 3
+	SHADER_ATTRIB_VEC4 = 3
 )
 
 // Pixel formats
@@ -641,31 +641,31 @@ const (
 type PixelFormat c.Uint
 
 const (
-	PIXELFORMAT_UNCOMPRESSED_GRAYSCALE    PixelFormat = 1
-	PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA   PixelFormat = 2
-	PIXELFORMAT_UNCOMPRESSED_R5G6B5       PixelFormat = 3
-	PIXELFORMAT_UNCOMPRESSED_R8G8B8       PixelFormat = 4
-	PIXELFORMAT_UNCOMPRESSED_R5G5B5A1     PixelFormat = 5
-	PIXELFORMAT_UNCOMPRESSED_R4G4B4A4     PixelFormat = 6
-	PIXELFORMAT_UNCOMPRESSED_R8G8B8A8     PixelFormat = 7
-	PIXELFORMAT_UNCOMPRESSED_R32          PixelFormat = 8
-	PIXELFORMAT_UNCOMPRESSED_R32G32B32    PixelFormat = 9
-	PIXELFORMAT_UNCOMPRESSED_R32G32B32A32 PixelFormat = 10
-	PIXELFORMAT_UNCOMPRESSED_R16          PixelFormat = 11
-	PIXELFORMAT_UNCOMPRESSED_R16G16B16    PixelFormat = 12
-	PIXELFORMAT_UNCOMPRESSED_R16G16B16A16 PixelFormat = 13
-	PIXELFORMAT_COMPRESSED_DXT1_RGB       PixelFormat = 14
-	PIXELFORMAT_COMPRESSED_DXT1_RGBA      PixelFormat = 15
-	PIXELFORMAT_COMPRESSED_DXT3_RGBA      PixelFormat = 16
-	PIXELFORMAT_COMPRESSED_DXT5_RGBA      PixelFormat = 17
-	PIXELFORMAT_COMPRESSED_ETC1_RGB       PixelFormat = 18
-	PIXELFORMAT_COMPRESSED_ETC2_RGB       PixelFormat = 19
-	PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA  PixelFormat = 20
-	PIXELFORMAT_COMPRESSED_PVRT_RGB       PixelFormat = 21
-	PIXELFORMAT_COMPRESSED_PVRT_RGBA      PixelFormat = 22
-	PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA  PixelFormat = 23
+	PIXELFORMAT_UNCOMPRESSED_GRAYSCALE    = 1
+	PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA   = 2
+	PIXELFORMAT_UNCOMPRESSED_R5G6B5       = 3
+	PIXELFORMAT_UNCOMPRESSED_R8G8B8       = 4
+	PIXELFORMAT_UNCOMPRESSED_R5G5B5A1     = 5
+	PIXELFORMAT_UNCOMPRESSED_R4G4B4A4     = 6
+	PIXELFORMAT_UNCOMPRESSED_R8G8B8A8     = 7
+	PIXELFORMAT_UNCOMPRESSED_R32          = 8
+	PIXELFORMAT_UNCOMPRESSED_R32G32B32    = 9
+	PIXELFORMAT_UNCOMPRESSED_R32G32B32A32 = 10
+	PIXELFORMAT_UNCOMPRESSED_R16          = 11
+	PIXELFORMAT_UNCOMPRESSED_R16G16B16    = 12
+	PIXELFORMAT_UNCOMPRESSED_R16G16B16A16 = 13
+	PIXELFORMAT_COMPRESSED_DXT1_RGB       = 14
+	PIXELFORMAT_COMPRESSED_DXT1_RGBA      = 15
+	PIXELFORMAT_COMPRESSED_DXT3_RGBA      = 16
+	PIXELFORMAT_COMPRESSED_DXT5_RGBA      = 17
+	PIXELFORMAT_COMPRESSED_ETC1_RGB       = 18
+	PIXELFORMAT_COMPRESSED_ETC2_RGB       = 19
+	PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA  = 20
+	PIXELFORMAT_COMPRESSED_PVRT_RGB       = 21
+	PIXELFORMAT_COMPRESSED_PVRT_RGBA      = 22
+	PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA  = 23
 	// 2 bpp
-	PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA PixelFormat = 24
+	PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA = 24
 )
 
 // Texture parameters: filter mode
@@ -674,60 +674,60 @@ const (
 type TextureFilter c.Uint
 
 const (
-	TEXTURE_FILTER_POINT           TextureFilter = 0
-	TEXTURE_FILTER_BILINEAR        TextureFilter = 1
-	TEXTURE_FILTER_TRILINEAR       TextureFilter = 2
-	TEXTURE_FILTER_ANISOTROPIC_4X  TextureFilter = 3
-	TEXTURE_FILTER_ANISOTROPIC_8X  TextureFilter = 4
-	TEXTURE_FILTER_ANISOTROPIC_16X TextureFilter = 5
+	TEXTURE_FILTER_POINT           = 0
+	TEXTURE_FILTER_BILINEAR        = 1
+	TEXTURE_FILTER_TRILINEAR       = 2
+	TEXTURE_FILTER_ANISOTROPIC_4X  = 3
+	TEXTURE_FILTER_ANISOTROPIC_8X  = 4
+	TEXTURE_FILTER_ANISOTROPIC_16X = 5
 )
 
 // Texture parameters: wrap mode
 type TextureWrap c.Uint
 
 const (
-	TEXTURE_WRAP_REPEAT        TextureWrap = 0
-	TEXTURE_WRAP_CLAMP         TextureWrap = 1
-	TEXTURE_WRAP_MIRROR_REPEAT TextureWrap = 2
+	TEXTURE_WRAP_REPEAT        = 0
+	TEXTURE_WRAP_CLAMP         = 1
+	TEXTURE_WRAP_MIRROR_REPEAT = 2
 	// Mirrors and clamps to border the texture in tiled mode
-	TEXTURE_WRAP_MIRROR_CLAMP TextureWrap = 3
+	TEXTURE_WRAP_MIRROR_CLAMP = 3
 )
 
 // Cubemap layouts
 type CubemapLayout c.Uint
 
 const (
-	CUBEMAP_LAYOUT_AUTO_DETECT         CubemapLayout = 0
-	CUBEMAP_LAYOUT_LINE_VERTICAL       CubemapLayout = 1
-	CUBEMAP_LAYOUT_LINE_HORIZONTAL     CubemapLayout = 2
-	CUBEMAP_LAYOUT_CROSS_THREE_BY_FOUR CubemapLayout = 3
+	CUBEMAP_LAYOUT_AUTO_DETECT         = 0
+	CUBEMAP_LAYOUT_LINE_VERTICAL       = 1
+	CUBEMAP_LAYOUT_LINE_HORIZONTAL     = 2
+	CUBEMAP_LAYOUT_CROSS_THREE_BY_FOUR = 3
 	// Layout is defined by a 4x3 cross with cubemap faces
-	CUBEMAP_LAYOUT_CROSS_FOUR_BY_THREE CubemapLayout = 4
+	CUBEMAP_LAYOUT_CROSS_FOUR_BY_THREE = 4
 )
 
 // Font type, defines generation method
 type FontType c.Uint
 
 const (
-	FONT_DEFAULT FontType = 0
-	FONT_BITMAP  FontType = 1
+	FONT_DEFAULT = 0
+	FONT_BITMAP  = 1
 	// SDF font generation, requires external shader
-	FONT_SDF FontType = 2
+	FONT_SDF = 2
 )
 
 // Color blending modes (pre-defined)
 type BlendMode c.Uint
 
 const (
-	BLEND_ALPHA             BlendMode = 0
-	BLEND_ADDITIVE          BlendMode = 1
-	BLEND_MULTIPLIED        BlendMode = 2
-	BLEND_ADD_COLORS        BlendMode = 3
-	BLEND_SUBTRACT_COLORS   BlendMode = 4
-	BLEND_ALPHA_PREMULTIPLY BlendMode = 5
-	BLEND_CUSTOM            BlendMode = 6
+	BLEND_ALPHA             = 0
+	BLEND_ADDITIVE          = 1
+	BLEND_MULTIPLIED        = 2
+	BLEND_ADD_COLORS        = 3
+	BLEND_SUBTRACT_COLORS   = 4
+	BLEND_ALPHA_PREMULTIPLY = 5
+	BLEND_CUSTOM            = 6
 	// Blend textures using custom rgb/alpha separate src/dst factors (use rlSetBlendFactorsSeparate())
-	BLEND_CUSTOM_SEPARATE BlendMode = 7
+	BLEND_CUSTOM_SEPARATE = 7
 )
 
 // Gesture
@@ -735,49 +735,49 @@ const (
 type Gesture c.Uint
 
 const (
-	GESTURE_NONE        Gesture = 0
-	GESTURE_TAP         Gesture = 1
-	GESTURE_DOUBLETAP   Gesture = 2
-	GESTURE_HOLD        Gesture = 4
-	GESTURE_DRAG        Gesture = 8
-	GESTURE_SWIPE_RIGHT Gesture = 16
-	GESTURE_SWIPE_LEFT  Gesture = 32
-	GESTURE_SWIPE_UP    Gesture = 64
-	GESTURE_SWIPE_DOWN  Gesture = 128
-	GESTURE_PINCH_IN    Gesture = 256
+	GESTURE_NONE        = 0
+	GESTURE_TAP         = 1
+	GESTURE_DOUBLETAP   = 2
+	GESTURE_HOLD        = 4
+	GESTURE_DRAG        = 8
+	GESTURE_SWIPE_RIGHT = 16
+	GESTURE_SWIPE_LEFT  = 32
+	GESTURE_SWIPE_UP    = 64
+	GESTURE_SWIPE_DOWN  = 128
+	GESTURE_PINCH_IN    = 256
 	// Pinch out gesture
-	GESTURE_PINCH_OUT Gesture = 512
+	GESTURE_PINCH_OUT = 512
 )
 
 // Camera system modes
 type CameraMode c.Uint
 
 const (
-	CAMERA_CUSTOM       CameraMode = 0
-	CAMERA_FREE         CameraMode = 1
-	CAMERA_ORBITAL      CameraMode = 2
-	CAMERA_FIRST_PERSON CameraMode = 3
+	CAMERA_CUSTOM       = 0
+	CAMERA_FREE         = 1
+	CAMERA_ORBITAL      = 2
+	CAMERA_FIRST_PERSON = 3
 	// Camera third person
-	CAMERA_THIRD_PERSON CameraMode = 4
+	CAMERA_THIRD_PERSON = 4
 )
 
 // Camera projection
 type CameraProjection c.Uint
 
 const (
-	CAMERA_PERSPECTIVE CameraProjection = 0
+	CAMERA_PERSPECTIVE = 0
 	// Orthographic projection
-	CAMERA_ORTHOGRAPHIC CameraProjection = 1
+	CAMERA_ORTHOGRAPHIC = 1
 )
 
 // N-patch layout
 type NPatchLayout c.Uint
 
 const (
-	NPATCH_NINE_PATCH           NPatchLayout = 0
-	NPATCH_THREE_PATCH_VERTICAL NPatchLayout = 1
+	NPATCH_NINE_PATCH           = 0
+	NPATCH_THREE_PATCH_VERTICAL = 1
 	// Npatch layout: 3x1 tiles
-	NPATCH_THREE_PATCH_HORIZONTAL NPatchLayout = 2
+	NPATCH_THREE_PATCH_HORIZONTAL = 2
 )
 
 type RAudioBuffer struct {
