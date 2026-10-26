@@ -4,59 +4,59 @@ package raylib
 
 import "github.com/goplus/lib/c"
 
-// llgo:link (*Camera).Forward C.GetCameraForward
+//llgo:link (*Camera).Forward C.GetCameraForward
 func (self *Camera) Forward() Vector3 {
 	return Vector3{}
 }
 
-// llgo:link (*Camera).GetCameraUp C.GetCameraUp
+//llgo:link (*Camera).GetCameraUp C.GetCameraUp
 func (self *Camera) GetCameraUp() Vector3 {
 	return Vector3{}
 }
 
-// llgo:link (*Camera).Right C.GetCameraRight
+//llgo:link (*Camera).Right C.GetCameraRight
 func (self *Camera) Right() Vector3 {
 	return Vector3{}
 }
 
 // Camera movement
 //
-// llgo:link (*Camera).MoveForward C.CameraMoveForward
+//llgo:link (*Camera).MoveForward C.CameraMoveForward
 func (self *Camera) MoveForward(distance c.Float, moveInWorldPlane bool) {
 }
 
-// llgo:link (*Camera).MoveUp C.CameraMoveUp
+//llgo:link (*Camera).MoveUp C.CameraMoveUp
 func (self *Camera) MoveUp(distance c.Float) {
 }
 
-// llgo:link (*Camera).MoveRight C.CameraMoveRight
+//llgo:link (*Camera).MoveRight C.CameraMoveRight
 func (self *Camera) MoveRight(distance c.Float, moveInWorldPlane bool) {
 }
 
-// llgo:link (*Camera).MoveToTarget C.CameraMoveToTarget
+//llgo:link (*Camera).MoveToTarget C.CameraMoveToTarget
 func (self *Camera) MoveToTarget(delta c.Float) {
 }
 
 // Camera rotation
 //
-// llgo:link (*Camera).Yaw C.CameraYaw
+//llgo:link (*Camera).Yaw C.CameraYaw
 func (self *Camera) Yaw(angle c.Float, rotateAroundTarget bool) {
 }
 
-// llgo:link (*Camera).Pitch C.CameraPitch
+//llgo:link (*Camera).Pitch C.CameraPitch
 func (self *Camera) Pitch(angle c.Float, lockView bool, rotateAroundTarget bool, rotateUp bool) {
 }
 
-// llgo:link (*Camera).Roll C.CameraRoll
+//llgo:link (*Camera).Roll C.CameraRoll
 func (self *Camera) Roll(angle c.Float) {
 }
 
-// llgo:link (*Camera).ViewMatrix C.GetCameraViewMatrix
+//llgo:link (*Camera).ViewMatrix C.GetCameraViewMatrix
 func (self *Camera) ViewMatrix() Matrix {
 	return Matrix{}
 }
 
-// llgo:link (*Camera).ProjectionMatrix C.GetCameraProjectionMatrix
+//llgo:link (*Camera).ProjectionMatrix C.GetCameraProjectionMatrix
 func (self *Camera) ProjectionMatrix(aspect c.Float) Matrix {
 	return Matrix{}
 }
